@@ -1,0 +1,30 @@
+name: build
+on: [push]
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache the plugins directory
+        uses: actions/cache@v3
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles('.tflint.hcl') }}
+      - uses: terraform-linters/setup-tflint@v3
+        name: Setup
+        with:
+          tflint_version: v0.43.0
+      - name: Init
+        run: tflint --init
+      - name: Lint
+        run: tflint --format compact
+  test:
+    name: Test
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create
+        run: ./create.sh
+      - name: Destroy
+        run: ./destroy.sh

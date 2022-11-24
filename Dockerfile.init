@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1.4
+
+FROM hashicorp/terraform:1.3.5
+
+RUN <<EOF
+apk add --update --no-cache \
+  postgresql-client \
+  python3 \
+  py3-psycopg2
+EOF
+
+VOLUME /host
+
+WORKDIR /host
+
+ENTRYPOINT ["ash", "init.sh"]
