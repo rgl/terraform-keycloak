@@ -22,3 +22,5 @@ function wait-for-service {
   return $exit_code
 }
 wait-for-service init
+
+echo 'Start the login dance at http://localhost:8081 as alice:alice'

@@ -26,3 +26,16 @@ resource "keycloak_user" "alice" {
     temporary = false
   }
 }
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
+resource "keycloak_openid_client" "example_go_confidential" {
+  realm_id              = keycloak_realm.example.id
+  description           = "Example Go Confidential Client"
+  client_id             = "example-go-confidential"
+  client_secret         = "example" # NB in a real program, this should be randomly generated.
+  access_type           = "CONFIDENTIAL"
+  standard_flow_enabled = true
+  root_url              = "http://localhost:8081"
+  base_url              = "/"
+  valid_redirect_uris   = ["/auth/keycloak/callback"]
+}

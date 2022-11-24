@@ -2,3 +2,4 @@
 terraform.tfstate*
 tfplan
 *.log
+clients/example-go-confidential/example-go-confidential*

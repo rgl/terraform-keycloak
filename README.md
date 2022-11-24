@@ -9,6 +9,8 @@ This will:
 * Create a test Keycloak instance inside a docker container using docker compose.
 * Create the `example` realm.
   * Create the `alice` user.
+  * Create the `example-go-confidential` client.
+* Start the example `example-go-confidential` client.
 
 # Usage
 
@@ -28,8 +30,13 @@ Start the environment:
 
 When anything goes wrong, you can try to troubleshoot at:
 
+* http://localhost:8080/realms/example/.well-known/openid-configuration (Keycloak OIDC configuration)
 * http://keycloak.test:8080 (Keycloak)
 * http://localhost:8025 (MailHog (email server))
+
+Login the example application:
+
+http://localhost:8081/auth/login
 
 Destroy everything:
 

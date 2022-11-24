@@ -48,3 +48,13 @@ services:
     command:
       - destroy
       - -auto-approve
+  example-go-confidential:
+    build:
+      context: clients/example-go-confidential
+    ports:
+      - 8081:8081
+    environment:
+      - EXAMPLE_URL=http://localhost:8081
+      - EXAMPLE_OIDC_ISSUER_URL=http://keycloak.test:8080/realms/example
+      - EXAMPLE_OIDC_CLIENT_ID=example-go-confidential
+      - EXAMPLE_OIDC_CLIENT_SECRET=example
