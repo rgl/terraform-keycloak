@@ -7,6 +7,7 @@ This initializes a Keycloak instance using the [mrparkers/terraform-provider-key
 This will:
 
 * Create a test Keycloak instance inside a docker container using docker compose.
+* Create the `example` realm.
 
 # Usage
 
