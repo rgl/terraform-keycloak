@@ -8,6 +8,7 @@ This will:
 
 * Create a test Keycloak instance inside a docker container using docker compose.
 * Create the `example` realm.
+  * Create the `alice` user.
 
 # Usage
 
