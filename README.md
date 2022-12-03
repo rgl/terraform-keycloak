@@ -20,6 +20,8 @@ Add the following to your machine `hosts` file:
 
 ```
 127.0.0.1 keycloak.test
+127.0.0.1 mail.test
+127.0.0.1 example-go-confidential.test
 ```
 
 Start the environment:
@@ -30,9 +32,9 @@ Start the environment:
 
 When anything goes wrong, you can try to troubleshoot at:
 
-* http://localhost:8080/realms/example/.well-known/openid-configuration (Keycloak OIDC configuration)
+* http://keycloak.test:8080/realms/example/.well-known/openid-configuration (Keycloak OIDC configuration)
 * http://keycloak.test:8080 (Keycloak)
-* http://localhost:8025 (MailHog (email server))
+* http://mail.test:8025 (MailHog (email server))
 
 Login the example application:
 

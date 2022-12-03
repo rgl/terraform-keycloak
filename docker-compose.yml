@@ -54,7 +54,20 @@ services:
     ports:
       - 8081:8081
     environment:
-      - EXAMPLE_URL=http://localhost:8081
+      - EXAMPLE_URL=http://example-go-confidential.test:8081
       - EXAMPLE_OIDC_ISSUER_URL=http://keycloak.test:8080/realms/example
       - EXAMPLE_OIDC_CLIENT_ID=example-go-confidential
       - EXAMPLE_OIDC_CLIENT_SECRET=example
+    networks:
+      default:
+        aliases:
+          - example-go-confidential.test
+  example-go-confidential-test:
+    profiles:
+      - test
+    build:
+      context: clients/example-go-confidential-test
+    environment:
+      - EXAMPLE_LOGIN_URL=http://example-go-confidential.test:8081/auth/login
+      - EXAMPLE_USERNAME=alice
+      - EXAMPLE_PASSWORD=alice

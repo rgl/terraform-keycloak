@@ -35,7 +35,7 @@ resource "keycloak_openid_client" "example_go_confidential" {
   client_secret         = "example" # NB in a real program, this should be randomly generated.
   access_type           = "CONFIDENTIAL"
   standard_flow_enabled = true
-  root_url              = "http://localhost:8081"
+  root_url              = "http://example-go-confidential.test:8081"
   base_url              = "/"
   valid_redirect_uris   = ["/auth/keycloak/callback"]
 }

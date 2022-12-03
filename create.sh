@@ -6,6 +6,7 @@ docker compose down --volumes
 rm -f terraform.{log,tfstate,tfstate.backup} tfplan
 
 # start the environment in background.
+docker compose --profile test build
 docker compose up --build --detach
 
 # wait for the services to exit.
@@ -23,4 +24,18 @@ function wait-for-service {
 }
 wait-for-service init
 
-echo 'Start the login dance at http://localhost:8081 as alice:alice'
+# execute the automatic tests.
+docker compose --profile test run example-go-confidential-test | sed -E 's,^(.*),example-go-confidential-test: \1,g'
+
+# show how to use the system.
+cat <<'EOF'
+
+####
+
+example-go-confidential client:
+  Start the login dance at http://example-go-confidential.test:8081 as alice:alice
+
+keycloak example realm:
+  http://keycloak.test:8080/admin/master/console/#/example/clients
+  http://keycloak.test:8080/realms/example/.well-known/openid-configuration
+EOF
