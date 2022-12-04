@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # destroy the existing environment.
-docker compose down --volumes
+docker compose down --remove-orphans --volumes
 rm -f terraform.{log,tfstate,tfstate.backup} tfplan
 
 # start the environment in background.
@@ -30,10 +30,13 @@ docker compose --profile test run example-go-confidential-test | sed -E 's,^(.*)
 # show how to use the system.
 cat <<'EOF'
 
-####
+#### Manual tests
 
 example-go-confidential client:
   Start the login dance at http://example-go-confidential.test:8081 as alice:alice
+
+example-react-public client:
+  Start the login dance at http://example-react-public.test:8082 as alice:alice
 
 keycloak example realm:
   http://keycloak.test:8080/admin/master/console/#/example/clients

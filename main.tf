@@ -39,3 +39,16 @@ resource "keycloak_openid_client" "example_go_confidential" {
   base_url              = "/"
   valid_redirect_uris   = ["/auth/keycloak/callback"]
 }
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
+resource "keycloak_openid_client" "example_react_public" {
+  realm_id              = keycloak_realm.example.id
+  description           = "Example React Public Client"
+  client_id             = "example-react-public"
+  access_type           = "PUBLIC"
+  standard_flow_enabled = true
+  root_url              = "http://example-react-public.test:8082"
+  base_url              = "/"
+  valid_redirect_uris   = ["/"]
+  web_origins           = ["+"]
+}

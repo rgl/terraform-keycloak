@@ -71,3 +71,12 @@ services:
       - EXAMPLE_LOGIN_URL=http://example-go-confidential.test:8081/auth/login
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
+  example-react-public:
+    build:
+      context: clients/example-react-public
+    ports:
+      - 8082:8082
+    environment:
+      - EXAMPLE_URL=http://example-react-public.test:8082
+      - EXAMPLE_OIDC_AUTHORITY=http://keycloak.test:8080/realms/example
+      - EXAMPLE_OIDC_CLIENT_ID=example-react-public

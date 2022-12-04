@@ -1,0 +1,6 @@
+*
+!public
+!src
+!go.*
+!*.go
+!*.json
