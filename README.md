@@ -22,6 +22,7 @@ Add the following to your machine `hosts` file:
 127.0.0.1 keycloak.test
 127.0.0.1 mail.test
 127.0.0.1 example-go-confidential.test
+127.0.0.1 example-react-public.test
 ```
 
 Start the environment:

@@ -25,7 +25,16 @@ function wait-for-service {
 wait-for-service init
 
 # execute the automatic tests.
-docker compose --profile test run example-go-confidential-test | sed -E 's,^(.*),example-go-confidential-test: \1,g'
+cat <<'EOF'
+
+#### Automated tests results
+
+EOF
+echo 'example-go-confidential client test:'
+docker compose --profile test run example-go-confidential-test | sed -E 's,^(.*),  \1,g'
+echo
+echo 'example-react-public client test:'
+docker compose --profile test run example-react-public-test | sed -E 's,^(.*),  \1,g'
 
 # show how to use the system.
 cat <<'EOF'
