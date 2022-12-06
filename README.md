@@ -55,3 +55,4 @@ Destroy everything:
 * [Dex](https://dexidp.io)
 * [OAuth2 Proxy](https://github.com/oauth2-proxy/oauth2-proxy)
 * [Ory Hydra](https://www.ory.sh)
+* [Zitadel](https://github.com/zitadel/zitadel)
