@@ -10,7 +10,9 @@ This will:
 * Create the `example` realm.
   * Create the `alice` user.
   * Create the `example-go-confidential` client.
-* Start the example `example-go-confidential` client.
+  * Create the `example-react-public` client.
+* Start the example `example-go-confidential` client (and test it).
+* Start the example `example-react-public` client (and test it).
 
 # Usage
 
