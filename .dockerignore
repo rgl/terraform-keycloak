@@ -3,3 +3,6 @@
 !*.tf
 !*.sh
 !*.py
+!*.csproj
+!*.cs
+!clients/example-csharp-public-device-test/tmp/ExampleCsharpPublicDevice

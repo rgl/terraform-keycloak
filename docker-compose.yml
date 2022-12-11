@@ -48,6 +48,19 @@ services:
     command:
       - destroy
       - -auto-approve
+  example-csharp-public-device:
+    profiles:
+      - example-csharp-public-device
+    build:
+      context: clients/example-csharp-public-device
+  example-csharp-public-device-test:
+    profiles:
+      - example-csharp-public-device
+    build:
+      context: clients/example-csharp-public-device-test
+    environment:
+      - EXAMPLE_USERNAME=alice
+      - EXAMPLE_PASSWORD=alice
   example-go-confidential:
     build:
       context: clients/example-go-confidential

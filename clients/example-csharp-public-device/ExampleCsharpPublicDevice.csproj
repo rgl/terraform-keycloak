@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>ExampleCsharpPublicDevice</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--
+      PublishTrimmed will trim the application dependencies to include only what is actually used by the application.
+      NB if you use reflection you might need to configure which assemblies/types/methods need to be included, e.g.:
+          <ItemGroup>
+            <TrimmerRootAssembly Include="My.Assembly.Full.Name" />
+          </ItemGroup>
+    -->
+    <PublishTrimmed>true</PublishTrimmed>
+    <!--
+      TrimMode selects the trimming mode:
+        CopyUsed (default): Assembly-level trimming
+        Link:               Member-level trimming
+    -->
+    <TrimMode>Link</TrimMode>
+    <!--
+      PublishSingleFile creates a single exe with the application binaries.
+    -->
+    <PublishSingleFile>true</PublishSingleFile>
+  </PropertyGroup>
+</Project>

@@ -5,6 +5,18 @@ set -euo pipefail
 docker compose down --remove-orphans --volumes
 rm -f terraform.{log,tfstate,tfstate.backup} tfplan
 
+# build example-csharp-public-device and copy it to
+# example-csharp-public-device-test/tmp/ExampleCsharpPublicDevice.
+docker compose --profile example-csharp-public-device build \
+  example-csharp-public-device
+docker compose --profile example-csharp-public-device run \
+  --volume "$PWD/clients/example-csharp-public-device-test/tmp/:/host" \
+  --entrypoint cp \
+  example-csharp-public-device \
+  /ExampleCsharpPublicDevice /host
+docker compose --profile example-csharp-public-device build \
+  example-csharp-public-device-test
+
 # start the environment in background.
 docker compose --profile test build
 docker compose up --build --detach
@@ -30,6 +42,9 @@ cat <<'EOF'
 #### Automated tests results
 
 EOF
+echo 'example-csharp-public-device client test:'
+docker compose --profile example-csharp-public-device run example-csharp-public-device-test | sed -E 's,^(.*),  \1,g'
+echo
 echo 'example-go-confidential client test:'
 docker compose --profile test run example-go-confidential-test | sed -E 's,^(.*),  \1,g'
 echo
@@ -40,6 +55,10 @@ docker compose --profile test run example-react-public-test | sed -E 's,^(.*),  
 cat <<'EOF'
 
 #### Manual tests
+
+example-csharp-public-device client:
+  Execute:
+    docker compose --profile example-csharp-public-device run example-csharp-public-device
 
 example-go-confidential client:
   Start the login dance at http://example-go-confidential.test:8081 as alice:alice

@@ -52,3 +52,12 @@ resource "keycloak_openid_client" "example_react_public" {
   valid_redirect_uris   = ["/"]
   web_origins           = ["+"]
 }
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
+resource "keycloak_openid_client" "example_csharp_public_device" {
+  realm_id                                  = keycloak_realm.example.id
+  description                               = "Example Csharp Public Device Client"
+  client_id                                 = "example-csharp-public-device"
+  access_type                               = "PUBLIC"
+  oauth2_device_authorization_grant_enabled = true
+}
