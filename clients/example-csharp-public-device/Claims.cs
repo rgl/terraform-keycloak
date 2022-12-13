@@ -35,7 +35,9 @@ public class Claims
 
         var payload = FromBase64UrlString(parts[1]);
 
-        return JsonSerializer.Deserialize<Claims>(payload);
+        return JsonSerializer.Deserialize<Claims>(
+            payload,
+            ClaimsJsonSerializerContext.Default.Claims);
     }
 
     private static byte[] FromBase64UrlString(string s)
@@ -45,4 +47,9 @@ public class Claims
                 .Replace('_', '/')
                 .Replace('-', '+'));
     }
+}
+
+[JsonSerializable(typeof(Claims))]
+public partial class ClaimsJsonSerializerContext : JsonSerializerContext
+{
 }

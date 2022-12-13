@@ -32,7 +32,9 @@ public class DeviceAuthorizationClient
         var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
         var responseJson = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<DeviceAuthorizationResponse>(responseJson);
+        return JsonSerializer.Deserialize<DeviceAuthorizationResponse>(
+            responseJson,
+            DeviceAuthorizationJsonSerializerContext.Default.DeviceAuthorizationResponse);
     }
 
     public async Task<DeviceAccessTokenResponse> GetDeviceAccessTokenAsync(DeviceAuthorizationResponse deviceAuthorization)
@@ -54,11 +56,15 @@ public class DeviceAuthorizationClient
             var responseJson = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                return JsonSerializer.Deserialize<DeviceAccessTokenResponse>(responseJson);
+                return JsonSerializer.Deserialize<DeviceAccessTokenResponse>(
+                    responseJson,
+                    DeviceAuthorizationJsonSerializerContext.Default.DeviceAccessTokenResponse);
             }
             else
             {
-                var errorResponse = JsonSerializer.Deserialize<DeviceAuthorizationErrorResponse>(responseJson);
+                var errorResponse = JsonSerializer.Deserialize<DeviceAuthorizationErrorResponse>(
+                    responseJson,
+                    DeviceAuthorizationJsonSerializerContext.Default.DeviceAuthorizationErrorResponse);
                 switch (errorResponse.Error)
                 {
                     case "authorization_pending":
@@ -75,18 +81,7 @@ public class DeviceAuthorizationClient
             }
         }
     }
-
-    // see https://www.rfc-editor.org/rfc/rfc6749#section-5.2
-    private class DeviceAuthorizationErrorResponse
-    {
-        [JsonPropertyName("error")]
-        public string Error { get; set; }
-
-        [JsonPropertyName("error_description")]
-        public string ErrorDescription { get; set; }
-    }
 }
-
 
 // see https://www.rfc-editor.org/rfc/rfc8628#section-3.2
 public class DeviceAuthorizationResponse
@@ -110,6 +105,16 @@ public class DeviceAuthorizationResponse
     public int Interval { get; set; }
 }
 
+// see https://www.rfc-editor.org/rfc/rfc6749#section-5.2
+public class DeviceAuthorizationErrorResponse
+{
+    [JsonPropertyName("error")]
+    public string Error { get; set; }
+
+    [JsonPropertyName("error_description")]
+    public string ErrorDescription { get; set; }
+}
+
 // see https://www.rfc-editor.org/rfc/rfc8628#section-3.5
 // see https://www.rfc-editor.org/rfc/rfc6749#section-5.1
 public class DeviceAccessTokenResponse
@@ -131,4 +136,11 @@ public class DeviceAccessTokenResponse
 
     [JsonPropertyName("id_token")]
     public string IdToken { get; set; }
+}
+
+[JsonSerializable(typeof(DeviceAuthorizationResponse))]
+[JsonSerializable(typeof(DeviceAuthorizationErrorResponse))]
+[JsonSerializable(typeof(DeviceAccessTokenResponse))]
+public partial class DeviceAuthorizationJsonSerializerContext : JsonSerializerContext
+{
 }
