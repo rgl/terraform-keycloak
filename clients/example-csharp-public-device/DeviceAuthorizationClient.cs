@@ -20,7 +20,7 @@ public class DeviceAuthorizationClient
 
     public async Task<DeviceAuthorizationResponse> GetDeviceAuthorizationAsync(string scope)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, _deviceAuthorizationEndpoint)
+        using var request = new HttpRequestMessage(HttpMethod.Post, _deviceAuthorizationEndpoint)
         {
             Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
@@ -29,7 +29,7 @@ public class DeviceAuthorizationClient
                     ["scope"] = scope,
                 })
         };
-        var response = await _httpClient.SendAsync(request);
+        using var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
         var responseJson = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<DeviceAuthorizationResponse>(
@@ -42,7 +42,7 @@ public class DeviceAuthorizationClient
         var pollingDelay = deviceAuthorization.Interval;
         while (true)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, _tokenEndpoint)
+            using var request = new HttpRequestMessage(HttpMethod.Post, _tokenEndpoint)
             {
                 Content = new FormUrlEncodedContent(
                     new Dictionary<string, string>
@@ -52,7 +52,7 @@ public class DeviceAuthorizationClient
                         ["client_id"] = _clientId,
                     })
             };
-            var response = await _httpClient.SendAsync(request);
+            using var response = await _httpClient.SendAsync(request);
             var responseJson = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
