@@ -1,6 +1,6 @@
 // see https://www.rfc-editor.org/rfc/rfc8628
 
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 
 public class DeviceAuthorizationClient
@@ -31,9 +31,7 @@ public class DeviceAuthorizationClient
         };
         using var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
-        var responseJson = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<DeviceAuthorizationResponse>(
-            responseJson,
+        return await response.Content.ReadFromJsonAsync<DeviceAuthorizationResponse>(
             DeviceAuthorizationJsonSerializerContext.Default.DeviceAuthorizationResponse);
     }
 
@@ -53,17 +51,14 @@ public class DeviceAuthorizationClient
                     })
             };
             using var response = await _httpClient.SendAsync(request);
-            var responseJson = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                return JsonSerializer.Deserialize<DeviceAccessTokenResponse>(
-                    responseJson,
+                return await response.Content.ReadFromJsonAsync<DeviceAccessTokenResponse>(
                     DeviceAuthorizationJsonSerializerContext.Default.DeviceAccessTokenResponse);
             }
             else
             {
-                var errorResponse = JsonSerializer.Deserialize<DeviceAuthorizationErrorResponse>(
-                    responseJson,
+                var errorResponse = await response.Content.ReadFromJsonAsync<DeviceAuthorizationErrorResponse>(
                     DeviceAuthorizationJsonSerializerContext.Default.DeviceAuthorizationErrorResponse);
                 switch (errorResponse.Error)
                 {
