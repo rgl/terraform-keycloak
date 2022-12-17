@@ -7,9 +7,11 @@ services:
       - 8025:8025
   keycloak:
     # see https://quay.io/repository/keycloak/keycloak
+    # see https://www.keycloak.org/docs/latest/release_notes/index.html
     # see https://www.keycloak.org/server/containers
     # see https://github.com/keycloak/keycloak/blob/main/quarkus/container/Dockerfile
-    image: quay.io/keycloak/keycloak:20.0.1
+    # see https://github.com/keycloak/keycloak/releases
+    image: quay.io/keycloak/keycloak:20.0.2
     ports:
       - 8080:8080
     environment:
