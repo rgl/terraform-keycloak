@@ -90,9 +90,9 @@ services:
     ports:
       - 8082:8082
     environment:
-      - EXAMPLE_URL=http://example-react-public.test:8082
       - EXAMPLE_OIDC_AUTHORITY=http://keycloak.test:8080/realms/example
       - EXAMPLE_OIDC_CLIENT_ID=example-react-public
+      - EXAMPLE_OIDC_REDIRECT_URI=http://example-react-public.test:8082/
     networks:
       default:
         aliases:

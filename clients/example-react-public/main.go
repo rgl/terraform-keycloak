@@ -27,9 +27,9 @@ func main() {
 		log.Fatalf("\nERROR You MUST NOT pass any positional arguments")
 	}
 
-	url := os.Getenv("EXAMPLE_URL")
-	if url == "" {
-		log.Fatalf("ERROR You MUST set the EXAMPLE_URL environment variable")
+	oidcRedirectURI := os.Getenv("EXAMPLE_OIDC_REDIRECT_URI")
+	if oidcRedirectURI == "" {
+		log.Fatalf("ERROR You MUST set the EXAMPLE_OIDC_REDIRECT_URI environment variable")
 	}
 
 	oidcAuthority := os.Getenv("EXAMPLE_OIDC_AUTHORITY")
@@ -44,12 +44,12 @@ func main() {
 
 	config := struct {
 		Authority   string `json:"authority"`
-		ClientId    string `json:"clientId"`
-		RedirectUri string `json:"redirectUri"`
+		ClientID    string `json:"clientId"`
+		RedirectURI string `json:"redirectUri"`
 	}{
 		oidcAuthority,
 		oidcClientID,
-		url,
+		oidcRedirectURI,
 	}
 
 	configJson, err := json.Marshal(config)
