@@ -44,7 +44,7 @@ When anything goes wrong, you can try to troubleshoot at:
 
 * `docker compose logs --follow`
 * http://keycloak.test:8080/realms/example/.well-known/openid-configuration (Keycloak OIDC configuration)
-* http://keycloak.test:8080 (Keycloak)
+* http://keycloak.test:8080 (Keycloak; login as `admin`:`admin`)
 * http://mail.test:8025 (MailHog (email server))
 
 Login the example application:
