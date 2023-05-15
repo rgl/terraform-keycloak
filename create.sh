@@ -23,8 +23,9 @@ docker compose up --build --detach
 
 # wait for the services to exit.
 function wait-for-service {
+  echo "Waiting for the $1 service to complete..."
   while true; do
-    result="$(docker compose ps --status exited --format json $1)"
+    result="$(docker compose ps --all --status exited --format json $1)"
     if [ -n "$result" ] && [ "$result" != 'null' ]; then
       exit_code="$(jq -r '.[].ExitCode' <<<"$result")"
       break
