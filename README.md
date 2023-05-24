@@ -48,6 +48,11 @@ Start the environment:
 ./create.sh
 ```
 
+Try the example applications displayed by the above command. E.g., try the
+OpenID Connect Confidential Client as the `alice`:`alice` user at:
+
+http://example-go-confidential.test:8081/auth/login
+
 When anything goes wrong, you can try to troubleshoot at:
 
 * `docker compose logs --follow`
@@ -55,10 +60,6 @@ When anything goes wrong, you can try to troubleshoot at:
 * http://keycloak.test:8080/realms/example/protocol/saml/descriptor (Keycloak SAML configuration)
 * http://keycloak.test:8080 (Keycloak; login as `admin`:`admin`)
 * http://mail.test:8025 (MailHog (email server))
-
-Login the example application:
-
-http://localhost:8081/auth/login
 
 Destroy everything:
 
