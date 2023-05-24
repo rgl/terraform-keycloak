@@ -11,6 +11,30 @@ resource "keycloak_realm" "example" {
   }
 }
 
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/group
+resource "keycloak_group" "administrators" {
+  realm_id = keycloak_realm.example.id
+  name     = "administrators"
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/group_roles
+resource "keycloak_group_roles" "administrators" {
+  realm_id = keycloak_group.administrators.realm_id
+  group_id = keycloak_group.administrators.id
+  role_ids = [
+    keycloak_role.example_go_saml_administrator.id,
+  ]
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/group_memberships
+resource "keycloak_group_memberships" "administrators" {
+  realm_id = keycloak_realm.example.id
+  group_id = keycloak_group.administrators.id
+  members = [
+    keycloak_user.alice.username,
+  ]
+}
+
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/user
 resource "keycloak_user" "alice" {
   realm_id       = keycloak_realm.example.id
@@ -40,6 +64,45 @@ resource "keycloak_openid_client" "example_go_confidential" {
   valid_redirect_uris   = ["/auth/keycloak/callback"]
 }
 
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_client
+resource "keycloak_saml_client" "example_go_saml" {
+  realm_id            = keycloak_realm.example.id
+  description         = "Example Go SAML"
+  client_id           = "example-go-saml"
+  root_url            = "http://example-go-saml.test:8082"
+  valid_redirect_uris = ["/saml/acs"]
+  signing_certificate = file("/host/clients/example-go-saml/example-go-saml-crt.pem")
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_attribute_protocol_mapper
+# TODO https://github.com/mrparkers/terraform-provider-keycloak/issues/844
+resource "keycloak_saml_user_attribute_protocol_mapper" "example_go_saml_username" {
+  realm_id                   = keycloak_saml_client.example_go_saml.realm_id
+  client_id                  = keycloak_saml_client.example_go_saml.id
+  name                       = "username"
+  user_attribute             = "username"
+  saml_attribute_name        = "username"
+  saml_attribute_name_format = "Basic"
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_attribute_protocol_mapper
+# TODO https://github.com/mrparkers/terraform-provider-keycloak/issues/844
+resource "keycloak_saml_user_attribute_protocol_mapper" "example_go_saml_email" {
+  realm_id                   = keycloak_saml_client.example_go_saml.realm_id
+  client_id                  = keycloak_saml_client.example_go_saml.id
+  name                       = "email"
+  user_attribute             = "email"
+  saml_attribute_name        = "email"
+  saml_attribute_name_format = "Basic"
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/role
+resource "keycloak_role" "example_go_saml_administrator" {
+  realm_id  = keycloak_saml_client.example_go_saml.realm_id
+  client_id = keycloak_saml_client.example_go_saml.id
+  name      = "administrator"
+}
+
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
 resource "keycloak_openid_client" "example_react_public" {
   realm_id              = keycloak_realm.example.id
@@ -47,7 +110,7 @@ resource "keycloak_openid_client" "example_react_public" {
   client_id             = "example-react-public"
   access_type           = "PUBLIC"
   standard_flow_enabled = true
-  root_url              = "http://example-react-public.test:8082"
+  root_url              = "http://example-react-public.test:8083"
   base_url              = "/"
   valid_redirect_uris   = ["/"]
   web_origins           = ["+"]

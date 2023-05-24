@@ -18,7 +18,7 @@ var content embed.FS
 func main() {
 	log.SetFlags(0)
 
-	var listenAddress = flag.String("listen", "0.0.0.0:8082", "Listen address.")
+	var listenAddress = flag.String("listen", "0.0.0.0:8083", "Listen address.")
 
 	flag.Parse()
 

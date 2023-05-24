@@ -5,6 +5,10 @@ set -euo pipefail
 docker compose down --remove-orphans --volumes
 rm -f terraform.{log,tfstate,tfstate.backup} tfplan
 
+# create the example-go-saml rsa key and certificate.
+# NB the public part (the certificate) is shared with the Keycloak SAML IdP.
+make -C clients/example-go-saml example-go-saml-key.pem
+
 # build example-csharp-public-device and copy it to
 # example-csharp-public-device-test/tmp/ExampleCsharpPublicDevice.
 docker compose --profile example-csharp-public-device build \
@@ -49,6 +53,9 @@ echo
 echo 'example-go-confidential client test:'
 docker compose --profile test run example-go-confidential-test | sed -E 's,^(.*),  \1,g'
 echo
+echo 'example-go-saml client test:'
+docker compose --profile test run example-go-saml-test | sed -E 's,^(.*),  \1,g'
+echo
 echo 'example-react-public client test:'
 docker compose --profile test run example-react-public-test | sed -E 's,^(.*),  \1,g'
 
@@ -64,10 +71,14 @@ example-csharp-public-device client:
 example-go-confidential client:
   Start the login dance at http://example-go-confidential.test:8081 as alice:alice
 
+example-go-saml client:
+  Start the login dance at http://example-go-saml.test:8082 as alice:alice
+
 example-react-public client:
-  Start the login dance at http://example-react-public.test:8082 as alice:alice
+  Start the login dance at http://example-react-public.test:8083 as alice:alice
 
 keycloak example realm:
   http://keycloak.test:8080/admin/master/console/#/example/clients
   http://keycloak.test:8080/realms/example/.well-known/openid-configuration
+  http://keycloak.test:8080/realms/example/protocol/saml/descriptor
 EOF

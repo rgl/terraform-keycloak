@@ -86,15 +86,40 @@ services:
       - EXAMPLE_LOGIN_URL=http://example-go-confidential.test:8081/auth/login
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
+  example-go-saml:
+    build:
+      context: clients/example-go-saml
+    ports:
+      - 8082:8082
+    command:
+      - -listen=http://example-go-saml.test:8082
+      - -entity-id=example-go-saml
+      - -idp-metadata=http://keycloak.test:8080/realms/example/protocol/saml/descriptor
+    volumes:
+      - ./clients/example-go-saml/example-go-saml-key.pem:/example-go-saml-key.pem:ro
+      - ./clients/example-go-saml/example-go-saml-crt.pem:/example-go-saml-crt.pem:ro
+    networks:
+      default:
+        aliases:
+          - example-go-saml.test
+  example-go-saml-test:
+    profiles:
+      - test
+    build:
+      context: clients/example-go-saml-test
+    environment:
+      - EXAMPLE_LOGIN_URL=http://example-go-saml.test:8082/login
+      - EXAMPLE_USERNAME=alice
+      - EXAMPLE_PASSWORD=alice
   example-react-public:
     build:
       context: clients/example-react-public
     ports:
-      - 8082:8082
+      - 8083:8083
     environment:
       - EXAMPLE_OIDC_AUTHORITY=http://keycloak.test:8080/realms/example
       - EXAMPLE_OIDC_CLIENT_ID=example-react-public
-      - EXAMPLE_OIDC_REDIRECT_URI=http://example-react-public.test:8082/
+      - EXAMPLE_OIDC_REDIRECT_URI=http://example-react-public.test:8083/
     networks:
       default:
         aliases:
@@ -105,6 +130,6 @@ services:
     build:
       context: clients/example-react-public-test
     environment:
-      - EXAMPLE_LOGIN_URL=http://example-react-public.test:8082
+      - EXAMPLE_LOGIN_URL=http://example-react-public.test:8083
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice

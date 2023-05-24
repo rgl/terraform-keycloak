@@ -17,5 +17,5 @@ RUN CGO_ENABLED=0 go build -ldflags="-s"
 
 FROM debian:bullseye-slim
 COPY --from=builder /app/example-react-public .
-EXPOSE 8082
+EXPOSE 8083
 ENTRYPOINT ["/example-react-public"]
