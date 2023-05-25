@@ -75,6 +75,7 @@ resource "keycloak_saml_client" "example_go_saml" {
 }
 
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_attribute_protocol_mapper
+# see https://www.keycloak.org/docs-api/21.1.1/javadocs/org/keycloak/models/UserModel.html
 resource "keycloak_saml_user_attribute_protocol_mapper" "example_go_saml_username" {
   realm_id                   = keycloak_saml_client.example_go_saml.realm_id
   client_id                  = keycloak_saml_client.example_go_saml.id
@@ -85,6 +86,7 @@ resource "keycloak_saml_user_attribute_protocol_mapper" "example_go_saml_usernam
 }
 
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_attribute_protocol_mapper
+# see https://www.keycloak.org/docs-api/21.1.1/javadocs/org/keycloak/models/UserModel.html
 resource "keycloak_saml_user_attribute_protocol_mapper" "example_go_saml_email" {
   realm_id                   = keycloak_saml_client.example_go_saml.realm_id
   client_id                  = keycloak_saml_client.example_go_saml.id
