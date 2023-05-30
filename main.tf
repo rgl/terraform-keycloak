@@ -74,24 +74,24 @@ resource "keycloak_saml_client" "example_go_saml" {
   signing_certificate = file("/host/clients/example-go-saml/example-go-saml-crt.pem")
 }
 
-# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_attribute_protocol_mapper
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_property_protocol_mapper
 # see https://www.keycloak.org/docs-api/21.1.1/javadocs/org/keycloak/models/UserModel.html
-resource "keycloak_saml_user_attribute_protocol_mapper" "example_go_saml_username" {
+resource "keycloak_saml_user_property_protocol_mapper" "example_go_saml_username" {
   realm_id                   = keycloak_saml_client.example_go_saml.realm_id
   client_id                  = keycloak_saml_client.example_go_saml.id
   name                       = "username"
-  user_attribute             = "username"
+  user_property              = "username"
   saml_attribute_name        = "username"
   saml_attribute_name_format = "Basic"
 }
 
-# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_attribute_protocol_mapper
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_property_protocol_mapper
 # see https://www.keycloak.org/docs-api/21.1.1/javadocs/org/keycloak/models/UserModel.html
-resource "keycloak_saml_user_attribute_protocol_mapper" "example_go_saml_email" {
+resource "keycloak_saml_user_property_protocol_mapper" "example_go_saml_email" {
   realm_id                   = keycloak_saml_client.example_go_saml.realm_id
   client_id                  = keycloak_saml_client.example_go_saml.id
   name                       = "email"
-  user_attribute             = "email"
+  user_property              = "email"
   saml_attribute_name        = "email"
   saml_attribute_name_format = "Basic"
 }
