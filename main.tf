@@ -107,6 +107,28 @@ resource "keycloak_saml_user_property_protocol_mapper" "example_go_saml_emailver
   saml_attribute_name_format = "Basic"
 }
 
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_property_protocol_mapper
+# see https://www.keycloak.org/docs-api/21.1.1/javadocs/org/keycloak/models/UserModel.html
+resource "keycloak_saml_user_property_protocol_mapper" "example_go_saml_firstname" {
+  realm_id                   = keycloak_saml_client.example_go_saml.realm_id
+  client_id                  = keycloak_saml_client.example_go_saml.id
+  name                       = "firstname"
+  user_property              = "firstName"
+  saml_attribute_name        = "firstname"
+  saml_attribute_name_format = "Basic"
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_property_protocol_mapper
+# see https://www.keycloak.org/docs-api/21.1.1/javadocs/org/keycloak/models/UserModel.html
+resource "keycloak_saml_user_property_protocol_mapper" "example_go_saml_lastname" {
+  realm_id                   = keycloak_saml_client.example_go_saml.realm_id
+  client_id                  = keycloak_saml_client.example_go_saml.id
+  name                       = "lastname"
+  user_property              = "lastName"
+  saml_attribute_name        = "lastname"
+  saml_attribute_name_format = "Basic"
+}
+
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/role
 resource "keycloak_role" "example_go_saml_administrator" {
   realm_id  = keycloak_saml_client.example_go_saml.realm_id
