@@ -1,18 +1,18 @@
 # syntax=docker/dockerfile:1.6
-FROM golang:1.20-bullseye as builder
+FROM golang:1.21-bookworm as builder
 WORKDIR /app
 COPY go.* ./
 RUN go mod download
 COPY *.go ./
 RUN CGO_ENABLED=0 go build -ldflags="-s"
 
-FROM chromedp/headless-shell:113.0.5672.93
+FROM chromedp/headless-shell:116.0.5845.14
 RUN <<EOF
 #!/bin/bash
 set -euxo pipefail
 apt-get update
 # install the dotnet dependencies.
-# see https://github.com/dotnet/core/blob/main/release-notes/6.0/linux-packages.md#debian-11-bullseye
+# see https://github.com/dotnet/core/blob/main/release-notes/8.0/linux-packages.md#debian-11-bullseye
 apt-get install -y --no-install-recommends \
     libc6 \
     libgcc1 \
