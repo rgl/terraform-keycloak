@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.4
+# syntax=docker/dockerfile:1.6
 FROM node:18-bullseye as builder-react
 WORKDIR /app
 COPY package.json package-lock.json ./

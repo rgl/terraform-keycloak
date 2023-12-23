@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.4
+# syntax=docker/dockerfile:1.6
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS builder
 WORKDIR /app
 COPY *.csproj ./
