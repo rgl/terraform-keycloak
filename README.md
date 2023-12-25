@@ -70,6 +70,13 @@ Destroy everything:
 ./destroy.sh
 ```
 
+List this repository dependencies (and which have newer versions):
+
+```bash
+export GITHUB_COM_TOKEN='YOUR_GITHUB_PERSONAL_TOKEN'
+./renovate.sh
+```
+
 # Alternatives
 
 * [Authelia](https://www.authelia.com)
