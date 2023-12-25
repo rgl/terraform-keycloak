@@ -1,12 +1,12 @@
 # syntax=docker/dockerfile:1.6
-FROM golang:1.20-bullseye as builder
+FROM golang:1.21-bookworm as builder
 WORKDIR /app
 COPY go.* ./
 RUN go mod download
 COPY *.go ./
 RUN CGO_ENABLED=0 go build -ldflags="-s"
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 RUN <<EOF
 apt-get update
 apt-get install -y ca-certificates
