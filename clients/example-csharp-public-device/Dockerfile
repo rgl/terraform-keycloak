@@ -11,7 +11,7 @@ RUN dotnet publish \
         --configuration Release \
         --output bin/out
 
-FROM debian:bookworm-slim
+FROM debian:12-slim
 RUN <<EOF
 #!/bin/bash
 set -euxo pipefail

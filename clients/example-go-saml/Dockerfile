@@ -6,7 +6,7 @@ RUN go mod download
 COPY *.go ./
 RUN CGO_ENABLED=0 go build -ldflags="-s"
 
-FROM debian:bookworm-slim
+FROM debian:12-slim
 RUN <<EOF
 apt-get update
 apt-get install -y ca-certificates

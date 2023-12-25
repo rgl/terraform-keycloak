@@ -15,7 +15,7 @@ COPY *.go .
 COPY --from=builder-react /app/build build
 RUN CGO_ENABLED=0 go build -ldflags="-s"
 
-FROM debian:bookworm-slim
+FROM debian:12-slim
 COPY --from=builder /app/example-react-public .
 EXPOSE 8083
 ENTRYPOINT ["/example-react-public"]
