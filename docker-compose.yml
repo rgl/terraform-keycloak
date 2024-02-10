@@ -11,7 +11,7 @@ services:
     # see https://www.keycloak.org/server/containers
     # see https://github.com/keycloak/keycloak/blob/main/quarkus/container/Dockerfile
     # see https://github.com/keycloak/keycloak/releases
-    image: quay.io/keycloak/keycloak:23.0.3
+    image: quay.io/keycloak/keycloak:23.0.6
     ports:
       - 8080:8080
     environment:
