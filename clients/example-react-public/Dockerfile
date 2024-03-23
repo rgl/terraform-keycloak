@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.6
+# syntax=docker.io/docker/dockerfile:1.7
 FROM node:20-bookworm as builder-react
 WORKDIR /app
 COPY package.json package-lock.json ./
