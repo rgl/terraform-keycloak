@@ -6,20 +6,21 @@ RUN go mod download
 COPY *.go ./
 RUN CGO_ENABLED=0 go build -ldflags="-s"
 
-FROM chromedp/headless-shell:116.0.5845.14
+FROM chromedp/headless-shell:125.0.6368.2
 RUN <<EOF
 #!/bin/bash
 set -euxo pipefail
 apt-get update
 # install the dotnet dependencies.
-# see https://github.com/dotnet/core/blob/main/release-notes/8.0/linux-packages.md#debian-11-bullseye
+# see https://github.com/dotnet/core/blob/main/release-notes/8.0/linux-packages.md
+# see https://github.com/dotnet/dotnet-docker/blob/main/src/runtime-deps/8.0/bookworm-slim/amd64/Dockerfile
 apt-get install -y --no-install-recommends \
     libc6 \
-    libgcc1 \
-    libgssapi-krb5-2 \
-    libicu67 \
-    libssl1.1 \
+    libgcc-s1 \
+    libicu72 \
+    libssl3 \
     libstdc++6 \
+    tzdata \
     zlib1g
 rm -rf /var/lib/apt/lists/*
 EOF
