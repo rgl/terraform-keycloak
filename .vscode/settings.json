@@ -1,5 +1,11 @@
 {
     "cSpell.words": [
-        "keycloak"
+        "Authelia",
+        "keycloak",
+        "Mailpit",
+        "mrparkers",
+        "OIDC",
+        "PKCE",
+        "Zitadel"
     ]
 }

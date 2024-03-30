@@ -1,10 +1,22 @@
 # see https://github.com/compose-spec/compose-spec/blob/master/spec.md
 # see https://github.com/opencontainers/image-spec/blob/master/annotations.md
 services:
-  mailhog:
-    image: mailhog/mailhog:v1.0.1
+  mailpit:
+    # see https://hub.docker.com/r/axllent/mailpit
+    # see https://github.com/axllent/mailpit
+    # see https://mailpit.axllent.org/docs/install/docker/
+    image: axllent/mailpit:v1.15.1
+    command:
+      - --smtp-auth-accept-any
+      - --smtp-auth-allow-insecure
     ports:
+      # smtp.
+      # http://localhost:1025
+      #- 1025:1025
+      # http.
+      # http://localhost:8025
       - 8025:8025
+    restart: on-failure
   keycloak:
     # see https://quay.io/repository/keycloak/keycloak
     # see https://www.keycloak.org/docs/latest/release_notes/index.html
@@ -21,7 +33,7 @@ services:
       - start-dev
     restart: on-failure
     depends_on:
-      - mailhog
+      - mailpit
     networks:
       default:
         aliases:

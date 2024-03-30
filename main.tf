@@ -5,7 +5,7 @@ resource "keycloak_realm" "example" {
   login_with_email_allowed = true
   reset_password_allowed   = true
   smtp_server {
-    host = "mailhog"
+    host = "mailpit"
     port = 1025
     from = "keycloak@example.com"
   }

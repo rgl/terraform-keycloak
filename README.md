@@ -59,7 +59,7 @@ When anything goes wrong, you can try to troubleshoot at:
 * http://keycloak.test:8080/realms/example/.well-known/openid-configuration (Keycloak OIDC configuration)
 * http://keycloak.test:8080/realms/example/protocol/saml/descriptor (Keycloak SAML configuration)
 * http://keycloak.test:8080 (Keycloak; login as `admin`:`admin`)
-* http://mail.test:8025 (MailHog (email server))
+* http://mail.test:8025 (Mailpit (email server))
 * For SAML troubleshooting, you can use the browser developer tools to capture
   the requests/responses and paste them in the SAML Decoder & Parser at
   https://www.scottbrady91.com/tools/saml-parser.
