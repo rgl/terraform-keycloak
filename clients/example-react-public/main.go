@@ -5,9 +5,11 @@ import (
 	"embed"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 )
@@ -18,7 +20,7 @@ var content embed.FS
 func main() {
 	log.SetFlags(0)
 
-	var listenAddress = flag.String("listen", "0.0.0.0:8083", "Listen address.")
+	var listenAddress = flag.String("listen", ":8083", "Listen address.")
 
 	flag.Parse()
 
@@ -41,6 +43,16 @@ func main() {
 	if oidcClientID == "" {
 		log.Fatalf("ERROR You MUST set the EXAMPLE_OIDC_CLIENT_ID environment variable")
 	}
+
+	listenURL, err := url.Parse(oidcRedirectURI)
+	if err != nil {
+		log.Panicf("Failed to parse the listen URL: %v", err)
+	}
+	listenScheme := listenURL.Scheme
+	if listenScheme != "http" && listenScheme != "https" {
+		log.Fatalf("ERROR Invalid listen URL scheme")
+	}
+	listenDomain := listenURL.Hostname()
 
 	config := struct {
 		Authority   string `json:"authority"`
@@ -70,10 +82,21 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.FS(content)))
 
-	log.Printf("Listening at http://%s", *listenAddress)
+	log.Printf("Listening at %s://%s", listenScheme, *listenAddress)
 
-	err = http.ListenAndServe(*listenAddress, nil)
+	switch listenScheme {
+	case "http":
+		err = http.ListenAndServe(*listenAddress, nil)
+	case "https":
+		err = http.ListenAndServeTLS(
+			*listenAddress,
+			fmt.Sprintf("/etc/ssl/private/%s-crt.pem", listenDomain),
+			fmt.Sprintf("/etc/ssl/private/%s-key.pem", listenDomain),
+			nil)
+	default:
+		log.Fatal("Invalid protocol scheme")
+	}
 	if err != nil {
-		log.Fatalf("Failed to ListenAndServe: %v", err)
+		log.Fatalf("Failed to listen: %v", err)
 	}
 }

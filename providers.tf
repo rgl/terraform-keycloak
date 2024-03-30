@@ -17,5 +17,5 @@ provider "keycloak" {
   client_id = "admin-cli"
   username  = "admin"
   password  = "admin"
-  url       = "http://keycloak:8080"
+  url       = "https://keycloak.test:8443"
 }

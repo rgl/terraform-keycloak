@@ -6,6 +6,8 @@ This initializes a Keycloak instance using the [mrparkers/terraform-provider-key
 
 This will:
 
+* Create an example private certification authority.
+  * Use it to sign all the used HTTPS certificates.
 * Create a test Keycloak instance inside a docker container using docker compose.
 * Create the `example` realm.
   * Create the `alice` user.
@@ -51,15 +53,15 @@ Start the environment:
 Try the example applications displayed by the above command. E.g., try the
 OpenID Connect Confidential Client as the `alice`:`alice` user at:
 
-http://example-go-confidential.test:8081/auth/login
+https://example-go-confidential.test:8081/auth/login
 
 When anything goes wrong, you can try to troubleshoot at:
 
 * `docker compose logs --follow`
-* http://keycloak.test:8080/realms/example/.well-known/openid-configuration (Keycloak OIDC configuration)
-* http://keycloak.test:8080/realms/example/protocol/saml/descriptor (Keycloak SAML configuration)
-* http://keycloak.test:8080 (Keycloak; login as `admin`:`admin`)
-* http://mail.test:8025 (Mailpit (email server))
+* https://keycloak.test:8443/realms/example/.well-known/openid-configuration (Keycloak OIDC configuration)
+* https://keycloak.test:8443/realms/example/protocol/saml/descriptor (Keycloak SAML configuration)
+* https://keycloak.test:8443 (Keycloak; login as `admin`:`admin`)
+* https://mail.test:8025 (Mailpit (email server))
 * For SAML troubleshooting, you can use the browser developer tools to capture
   the requests/responses and paste them in the SAML Decoder & Parser at
   https://www.scottbrady91.com/tools/saml-parser.

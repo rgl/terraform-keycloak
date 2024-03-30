@@ -7,6 +7,7 @@ import (
 	"crypto/x509"
 	"encoding/xml"
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -320,14 +321,19 @@ func main() {
 		}
 	}
 
-	rootURL, err := url.Parse(*listenFlag)
+	listenURL, err := url.Parse(*listenFlag)
 	if err != nil {
 		log.Panicf("Failed to parse the service provider url: %v", err)
 	}
+	listenScheme := listenURL.Scheme
+	if listenScheme != "http" && listenScheme != "https" {
+		log.Fatalf("ERROR Invalid EXAMPLE_URL scheme")
+	}
+	listenDomain := listenURL.Hostname()
 
 	samlMiddleware, _ := samlsp.New(samlsp.Options{
 		EntityID:          *entityIDFlag,
-		URL:               *rootURL,
+		URL:               *listenURL,
 		Key:               keyPair.PrivateKey.(*rsa.PrivateKey),
 		Certificate:       keyPair.Leaf,
 		IDPMetadata:       idpMetadata,
@@ -354,6 +360,20 @@ func main() {
 		w.WriteHeader(http.StatusFound)
 	})
 	http.Handle("/saml/", samlMiddleware)
-	log.Printf("Starting the service provider at %s", rootURL)
-	http.ListenAndServe(":"+rootURL.Port(), nil)
+	log.Printf("Starting the service provider at %s", listenURL)
+	switch listenScheme {
+	case "http":
+		err = http.ListenAndServe(":"+listenURL.Port(), nil)
+	case "https":
+		err = http.ListenAndServeTLS(
+			":"+listenURL.Port(),
+			fmt.Sprintf("/etc/ssl/private/%s-crt.pem", listenDomain),
+			fmt.Sprintf("/etc/ssl/private/%s-key.pem", listenDomain),
+			nil)
+	default:
+		log.Fatal("Invalid protocol scheme")
+	}
+	if err != nil {
+		log.Fatalf("Failed to listen: %v", err)
+	}
 }

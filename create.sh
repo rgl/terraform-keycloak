@@ -2,8 +2,11 @@
 set -euo pipefail
 
 # destroy the existing environment.
-docker compose down --remove-orphans --volumes
-rm -f terraform.{log,tfstate,tfstate.backup} tfplan
+./destroy.sh
+
+# create the certificates.
+docker compose build certificates
+docker compose run certificates
 
 # create the example-go-saml rsa key and certificate.
 # NB the public part (the certificate) is shared with the Keycloak SAML IdP.
@@ -29,7 +32,7 @@ docker compose up --build --detach
 function wait-for-service {
   echo "Waiting for the $1 service to complete..."
   while true; do
-    result="$(docker compose ps --all --status exited --format json $1)"
+    result="$(docker compose ps --status exited --format json $1)"
     if [ -n "$result" ] && [ "$result" != 'null' ]; then
       exit_code="$(jq -r '.ExitCode' <<<"$result")"
       break
@@ -69,16 +72,16 @@ example-csharp-public-device client:
     docker compose --profile example-csharp-public-device run example-csharp-public-device
 
 example-go-confidential client:
-  Start the login dance at http://example-go-confidential.test:8081 as alice:alice
+  Start the login dance at https://example-go-confidential.test:8081 as alice:alice
 
 example-go-saml client:
-  Start the login dance at http://example-go-saml.test:8082 as alice:alice
+  Start the login dance at https://example-go-saml.test:8082 as alice:alice
 
 example-react-public client:
-  Start the login dance at http://example-react-public.test:8083 as alice:alice
+  Start the login dance at https://example-react-public.test:8083 as alice:alice
 
 keycloak example realm:
-  http://keycloak.test:8080/admin/master/console/#/example/clients
-  http://keycloak.test:8080/realms/example/.well-known/openid-configuration
-  http://keycloak.test:8080/realms/example/protocol/saml/descriptor
+  https://keycloak.test:8443/admin/master/console/#/example/clients
+  https://keycloak.test:8443/realms/example/.well-known/openid-configuration
+  https://keycloak.test:8443/realms/example/protocol/saml/descriptor
 EOF

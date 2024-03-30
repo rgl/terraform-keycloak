@@ -4,6 +4,7 @@ FROM hashicorp/terraform:1.7.5
 
 RUN <<EOF
 apk add --update --no-cache \
+  ca-certificates \
   postgresql-client \
   python3 \
   py3-psycopg2

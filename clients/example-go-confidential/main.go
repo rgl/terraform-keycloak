@@ -11,6 +11,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 
@@ -150,10 +151,19 @@ func main() {
 		log.Fatalf("\nERROR You MUST NOT pass any positional arguments")
 	}
 
-	url := os.Getenv("EXAMPLE_URL")
-	if url == "" {
+	listenURL := os.Getenv("EXAMPLE_URL")
+	if listenURL == "" {
 		log.Fatalf("ERROR You MUST set the EXAMPLE_URL environment variable")
 	}
+	parsedListenURL, err := url.Parse(listenURL)
+	if err != nil {
+		log.Fatalf("ERROR Failed to parse EXAMPLE_URL")
+	}
+	listenScheme := parsedListenURL.Scheme
+	if listenScheme != "http" && listenScheme != "https" {
+		log.Fatalf("ERROR Invalid EXAMPLE_URL scheme")
+	}
+	listenDomain := parsedListenURL.Hostname()
 
 	oidcIssuerURL := os.Getenv("EXAMPLE_OIDC_ISSUER_URL")
 	if oidcIssuerURL == "" {
@@ -173,7 +183,6 @@ func main() {
 	oidcKeycloakCallbackPath := "/auth/keycloak/callback"
 
 	var oidcProvider *oidc.Provider
-	var err error
 
 	for {
 		oidcProvider, err = oidc.NewProvider(context.TODO(), oidcIssuerURL)
@@ -190,7 +199,7 @@ func main() {
 	oidcConfig := oauth2.Config{
 		ClientID:     oidcClientID,
 		ClientSecret: oidcClientSecret,
-		RedirectURL:  url + oidcKeycloakCallbackPath,
+		RedirectURL:  listenURL + oidcKeycloakCallbackPath,
 		Endpoint:     oidcProvider.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 	}
@@ -225,7 +234,7 @@ func main() {
 		// start the oidc user authentication dance.
 		// NB we are adding pkce code challenge because keycloak supports it.
 		//    see the code_challenge_methods_supported property at, e.g.:
-		// 		http://localhost:8080/realms/example/.well-known/openid-configuration
+		// 		https://keycloak.test:8443/realms/example/.well-known/openid-configuration
 		authCodeURL := oidcConfig.AuthCodeURL(
 			state,
 			oidc.Nonce(nonce),
@@ -356,10 +365,21 @@ func main() {
 		}
 	})
 
-	fmt.Printf("Listening at http://%s\n", *listenAddress)
+	fmt.Printf("Listening at %s://%s\n", listenScheme, *listenAddress)
 
-	err = http.ListenAndServe(*listenAddress, nil)
+	switch listenScheme {
+	case "http":
+		err = http.ListenAndServe(*listenAddress, nil)
+	case "https":
+		err = http.ListenAndServeTLS(
+			*listenAddress,
+			fmt.Sprintf("/etc/ssl/private/%s-crt.pem", listenDomain),
+			fmt.Sprintf("/etc/ssl/private/%s-key.pem", listenDomain),
+			nil)
+	default:
+		log.Fatal("Invalid protocol scheme")
+	}
 	if err != nil {
-		log.Fatalf("Failed to ListenAndServe: %v", err)
+		log.Fatalf("Failed to listen: %v", err)
 	}
 }

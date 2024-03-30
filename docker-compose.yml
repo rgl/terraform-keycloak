@@ -1,6 +1,11 @@
 # see https://github.com/compose-spec/compose-spec/blob/master/spec.md
 # see https://github.com/opencontainers/image-spec/blob/master/annotations.md
 services:
+  certificates:
+    build:
+      context: certificates
+    volumes:
+      - .:/host
   mailpit:
     # see https://hub.docker.com/r/axllent/mailpit
     # see https://github.com/axllent/mailpit
@@ -16,21 +21,33 @@ services:
       # http.
       # http://localhost:8025
       - 8025:8025
+    environment:
+      - MP_SMTP_TLS_KEY=/etc/ssl/private/mail.test-key.pem
+      - MP_SMTP_TLS_CERT=/etc/ssl/private/mail.test-crt.pem
+      - MP_UI_TLS_KEY=/etc/ssl/private/mail.test-key.pem
+      - MP_UI_TLS_CERT=/etc/ssl/private/mail.test-crt.pem
+    volumes:
+      - ./tmp/keycloak-ca/mail.test-key.pem:/etc/ssl/private/mail.test-key.pem:ro
+      - ./tmp/keycloak-ca/mail.test-crt.pem:/etc/ssl/private/mail.test-crt.pem:ro
+    networks:
+      default:
+        aliases:
+          - mail.test
     restart: on-failure
   keycloak:
-    # see https://quay.io/repository/keycloak/keycloak
-    # see https://www.keycloak.org/docs/latest/release_notes/index.html
-    # see https://www.keycloak.org/server/containers
-    # see https://github.com/keycloak/keycloak/blob/main/quarkus/container/Dockerfile
-    # see https://github.com/keycloak/keycloak/releases
-    image: quay.io/keycloak/keycloak:24.0.2
+    build:
+      context: keycloak
     ports:
-      - 8080:8080
+      - 8443:8443
     environment:
+      - KC_HOSTNAME=keycloak.test
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
     command:
       - start-dev
+    volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/etc/pki/ca-trust/source/anchors/keycloak.crt:ro
+      - ./tmp/keycloak-ca/keycloak.test-key.p12:/etc/pki/keycloak.test-key.p12:ro
     restart: on-failure
     depends_on:
       - mailpit
@@ -47,6 +64,7 @@ services:
       - TF_LOG=DEBUG
       - TF_LOG_PATH=/host/terraform.log
     volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
       - .:/host
   destroy:
     profiles:
@@ -57,6 +75,7 @@ services:
       - TF_LOG=DEBUG
       - TF_LOG_PATH=/host/terraform.log
     volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
       - .:/host
     entrypoint: terraform
     command:
@@ -76,6 +95,7 @@ services:
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
     volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
       - ./clients/example-csharp-public-device-test/playwright-report/:/app/playwright-report/
       - ./clients/example-csharp-public-device-test/test-results/:/app/test-results/
   example-go-confidential:
@@ -84,10 +104,14 @@ services:
     ports:
       - 8081:8081
     environment:
-      - EXAMPLE_URL=http://example-go-confidential.test:8081
-      - EXAMPLE_OIDC_ISSUER_URL=http://keycloak.test:8080/realms/example
+      - EXAMPLE_URL=https://example-go-confidential.test:8081
+      - EXAMPLE_OIDC_ISSUER_URL=https://keycloak.test:8443/realms/example
       - EXAMPLE_OIDC_CLIENT_ID=example-go-confidential
       - EXAMPLE_OIDC_CLIENT_SECRET=example
+    volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
+      - ./tmp/keycloak-ca/example-go-confidential.test-key.pem:/etc/ssl/private/example-go-confidential.test-key.pem:ro
+      - ./tmp/keycloak-ca/example-go-confidential.test-crt.pem:/etc/ssl/private/example-go-confidential.test-crt.pem:ro
     networks:
       default:
         aliases:
@@ -98,10 +122,11 @@ services:
     build:
       context: clients/example-go-confidential-test
     environment:
-      - EXAMPLE_LOGIN_URL=http://example-go-confidential.test:8081/auth/login
+      - EXAMPLE_LOGIN_URL=https://example-go-confidential.test:8081/auth/login
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
     volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
       - ./clients/example-go-confidential-test/playwright-report/:/app/playwright-report/
       - ./clients/example-go-confidential-test/test-results/:/app/test-results/
   example-go-saml:
@@ -110,10 +135,13 @@ services:
     ports:
       - 8082:8082
     command:
-      - -listen=http://example-go-saml.test:8082
+      - -listen=https://example-go-saml.test:8082
       - -entity-id=example-go-saml
-      - -idp-metadata=http://keycloak.test:8080/realms/example/protocol/saml/descriptor
+      - -idp-metadata=https://keycloak.test:8443/realms/example/protocol/saml/descriptor
     volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
+      - ./tmp/keycloak-ca/example-go-saml.test-key.pem:/etc/ssl/private/example-go-saml.test-key.pem:ro
+      - ./tmp/keycloak-ca/example-go-saml.test-crt.pem:/etc/ssl/private/example-go-saml.test-crt.pem:ro
       - ./clients/example-go-saml/example-go-saml-key.pem:/example-go-saml-key.pem:ro
       - ./clients/example-go-saml/example-go-saml-crt.pem:/example-go-saml-crt.pem:ro
     networks:
@@ -126,10 +154,11 @@ services:
     build:
       context: clients/example-go-saml-test
     environment:
-      - EXAMPLE_LOGIN_URL=http://example-go-saml.test:8082/login
+      - EXAMPLE_LOGIN_URL=https://example-go-saml.test:8082/login
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
     volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
       - ./clients/example-go-saml-test/playwright-report/:/app/playwright-report/
       - ./clients/example-go-saml-test/test-results/:/app/test-results/
   example-react-public:
@@ -138,9 +167,13 @@ services:
     ports:
       - 8083:8083
     environment:
-      - EXAMPLE_OIDC_AUTHORITY=http://keycloak.test:8080/realms/example
+      - EXAMPLE_OIDC_AUTHORITY=https://keycloak.test:8443/realms/example
       - EXAMPLE_OIDC_CLIENT_ID=example-react-public
-      - EXAMPLE_OIDC_REDIRECT_URI=http://example-react-public.test:8083/
+      - EXAMPLE_OIDC_REDIRECT_URI=https://example-react-public.test:8083/
+    volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
+      - ./tmp/keycloak-ca/example-react-public.test-key.pem:/etc/ssl/private/example-react-public.test-key.pem:ro
+      - ./tmp/keycloak-ca/example-react-public.test-crt.pem:/etc/ssl/private/example-react-public.test-crt.pem:ro
     networks:
       default:
         aliases:
@@ -151,9 +184,10 @@ services:
     build:
       context: clients/example-react-public-test
     environment:
-      - EXAMPLE_LOGIN_URL=http://example-react-public.test:8083
+      - EXAMPLE_LOGIN_URL=https://example-react-public.test:8083
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
     volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
       - ./clients/example-react-public-test/playwright-report/:/app/playwright-report/
       - ./clients/example-react-public-test/test-results/:/app/test-results/

@@ -1,6 +1,6 @@
-// see http://keycloak.test:8080/realms/example/.well-known/openid-configuration
-const string deviceAuthorizationEndpoint = "http://keycloak.test:8080/realms/example/protocol/openid-connect/auth/device";
-const string tokenEndpoint = "http://keycloak.test:8080/realms/example/protocol/openid-connect/token";
+// see https://keycloak.test:8443/realms/example/.well-known/openid-configuration
+const string deviceAuthorizationEndpoint = "https://keycloak.test:8443/realms/example/protocol/openid-connect/auth/device";
+const string tokenEndpoint = "https://keycloak.test:8443/realms/example/protocol/openid-connect/token";
 const string clientId = "example-csharp-public-device";
 const string scope = "openid";
 

@@ -5,7 +5,7 @@ resource "keycloak_realm" "example" {
   login_with_email_allowed = true
   reset_password_allowed   = true
   smtp_server {
-    host = "mailpit"
+    host = "mail.test"
     port = 1025
     from = "keycloak@example.com"
   }
@@ -59,7 +59,7 @@ resource "keycloak_openid_client" "example_go_confidential" {
   client_secret         = "example" # NB in a real program, this should be randomly generated.
   access_type           = "CONFIDENTIAL"
   standard_flow_enabled = true
-  root_url              = "http://example-go-confidential.test:8081"
+  root_url              = "https://example-go-confidential.test:8081"
   base_url              = "/"
   valid_redirect_uris   = ["/auth/keycloak/callback"]
 }
@@ -69,7 +69,7 @@ resource "keycloak_saml_client" "example_go_saml" {
   realm_id            = keycloak_realm.example.id
   description         = "Example Go SAML"
   client_id           = "example-go-saml"
-  root_url            = "http://example-go-saml.test:8082"
+  root_url            = "https://example-go-saml.test:8082"
   valid_redirect_uris = ["/saml/acs"]
   signing_certificate = file("/host/clients/example-go-saml/example-go-saml-crt.pem")
 }
@@ -143,7 +143,7 @@ resource "keycloak_openid_client" "example_react_public" {
   client_id             = "example-react-public"
   access_type           = "PUBLIC"
   standard_flow_enabled = true
-  root_url              = "http://example-react-public.test:8083"
+  root_url              = "https://example-react-public.test:8083"
   base_url              = "/"
   valid_redirect_uris   = ["/"]
   web_origins           = ["+"]

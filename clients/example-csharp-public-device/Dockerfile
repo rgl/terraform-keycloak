@@ -1,4 +1,5 @@
 # syntax=docker.io/docker/dockerfile:1.7
+
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
 WORKDIR /app
 COPY *.csproj ./
@@ -29,5 +30,5 @@ apt-get install -y --no-install-recommends \
     zlib1g
 rm -rf /var/lib/apt/lists/*
 EOF
-COPY --from=builder /app/bin/out/ExampleCsharpPublicDevice .
+COPY --from=builder /app/bin/out/ExampleCsharpPublicDevice /
 ENTRYPOINT ["/ExampleCsharpPublicDevice"]
