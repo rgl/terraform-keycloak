@@ -27,12 +27,11 @@ Console.WriteLine($"Authentication complete");
 
 var claims = Claims.FromJwt(deviceAccessToken.IdToken);
 
-Console.WriteLine($"IdToken Claims:");
-Console.WriteLine($"  Issuer: {claims.Issuer}");
-Console.WriteLine($"  Subject: {claims.Subject}");
-Console.WriteLine($"  PreferredUsername: {claims.PreferredUsername}");
-Console.WriteLine($"  Email: {claims.Email}");
-Console.WriteLine($"  EmailVerified: {claims.EmailVerified}");
-Console.WriteLine($"  Name: {claims.Name}");
-Console.WriteLine($"  GivenName: {claims.GivenName}");
-Console.WriteLine($"  FamilyName: {claims.FamilyName}");
+Console.WriteLine($"IdToken Claim Issuer: {claims.Issuer}");
+Console.WriteLine($"IdToken Claim Subject: {claims.Subject}");
+Console.WriteLine($"IdToken Claim PreferredUsername: {claims.PreferredUsername}");
+Console.WriteLine($"IdToken Claim Email: {claims.Email}");
+Console.WriteLine($"IdToken Claim EmailVerified: {claims.EmailVerified}");
+Console.WriteLine($"IdToken Claim Name: {claims.Name}");
+Console.WriteLine($"IdToken Claim GivenName: {claims.GivenName}");
+Console.WriteLine($"IdToken Claim FamilyName: {claims.FamilyName}");

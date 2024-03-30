@@ -1,0 +1,19 @@
+{
+  "name": "example-go-saml-test",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "rm -rf test-results/* playwright-report/* && npx playwright test",
+    "testHeaded": "npx playwright test --headed",
+    "testUi": "npx playwright test --ui"
+  },
+  "author": "Rui Lopes",
+  "devDependencies": {
+    "@playwright/test": "^1.42.1",
+    "@types/he": "^1.2.3",
+    "@types/node": "^20.11.30"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "he": "^1.2.0"
+  }
+}

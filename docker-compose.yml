@@ -63,6 +63,9 @@ services:
     environment:
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
+    volumes:
+      - ./clients/example-csharp-public-device-test/playwright-report/:/app/playwright-report/
+      - ./clients/example-csharp-public-device-test/test-results/:/app/test-results/
   example-go-confidential:
     build:
       context: clients/example-go-confidential
@@ -86,6 +89,9 @@ services:
       - EXAMPLE_LOGIN_URL=http://example-go-confidential.test:8081/auth/login
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
+    volumes:
+      - ./clients/example-go-confidential-test/playwright-report/:/app/playwright-report/
+      - ./clients/example-go-confidential-test/test-results/:/app/test-results/
   example-go-saml:
     build:
       context: clients/example-go-saml
@@ -111,6 +117,9 @@ services:
       - EXAMPLE_LOGIN_URL=http://example-go-saml.test:8082/login
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
+    volumes:
+      - ./clients/example-go-saml-test/playwright-report/:/app/playwright-report/
+      - ./clients/example-go-saml-test/test-results/:/app/test-results/
   example-react-public:
     build:
       context: clients/example-react-public
@@ -133,3 +142,6 @@ services:
       - EXAMPLE_LOGIN_URL=http://example-react-public.test:8083
       - EXAMPLE_USERNAME=alice
       - EXAMPLE_PASSWORD=alice
+    volumes:
+      - ./clients/example-react-public-test/playwright-report/:/app/playwright-report/
+      - ./clients/example-react-public-test/test-results/:/app/test-results/

@@ -4,8 +4,11 @@ tmp/
 .terraform/
 terraform.tfstate*
 tfplan
+.env*
 *.log
 node_modules/
+playwright-report/
+test-results/
 clients/example-go-confidential/example-go-confidential*
 clients/example-go-confidential-test/example-go-confidential-test*
 clients/example-go-confidential-test/screenshot.png
