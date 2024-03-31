@@ -30,16 +30,29 @@ docker compose up --build --detach
 
 # wait for the services to exit.
 function wait-for-service {
-  echo "Waiting for the $1 service to complete..."
+  local service="$1"
+  local timeout_s="${2:-300}"
+  local start_time_s=$(date +%s)
+  echo "Waiting for the $service service to exit..."
   while true; do
-    result="$(docker compose ps --status exited --format json $1)"
+    local result="$(docker compose ps --no-trunc --all --status exited --format json "$service")"
     if [ -n "$result" ] && [ "$result" != 'null' ]; then
-      exit_code="$(jq -r '.ExitCode' <<<"$result")"
+      local exit_code="$(jq -r '.ExitCode' <<<"$result")"
       break
     fi
     sleep 3
+    local elapsed_time_s=$(( $(date +%s) - $start_time_s ))
+    if [ $elapsed_time_s -ge $timeout_s ]; then
+      echo "ERROR: Timeout reached ($timeout_s seconds)."
+      docker version 2>&1 \
+        | perl -pe 's/^/DEBUG: docker version: /'
+      docker compose version 2>&1 \
+        | perl -pe 's/^/DEBUG: docker compose version: /'
+      local exit_code=1
+      break
+    fi
   done
-  docker compose logs $1
+  docker compose logs "$service"
   return $exit_code
 }
 wait-for-service init
