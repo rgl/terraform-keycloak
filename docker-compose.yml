@@ -98,6 +98,36 @@ services:
       - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
       - ./clients/example-csharp-public-device-test/playwright-report/:/app/playwright-report/
       - ./clients/example-csharp-public-device-test/test-results/:/app/test-results/
+  example-go-client-credentials-server:
+    build:
+      context: clients/example-go-client-credentials-server
+    ports:
+      - 8026:8026
+    environment:
+      - EXAMPLE_URL=https://example-go-client-credentials-server.test:8026
+      - EXAMPLE_OAUTH_CLIENT_ID=example-go-client-credentials-server
+      - EXAMPLE_OAUTH_CLIENT_SECRET=example
+      - EXAMPLE_OAUTH_TOKEN_INTROSPECTION_URL=https://keycloak.test:8443/realms/example/protocol/openid-connect/token/introspect
+    volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
+      - ./tmp/keycloak-ca/example-go-client-credentials-server.test-key.pem:/etc/ssl/private/example-go-client-credentials-server.test-key.pem:ro
+      - ./tmp/keycloak-ca/example-go-client-credentials-server.test-crt.pem:/etc/ssl/private/example-go-client-credentials-server.test-crt.pem:ro
+    networks:
+      default:
+        aliases:
+          - example-go-client-credentials-server.test
+  example-go-client-credentials-server-test:
+    profiles:
+      - example-go-client-credentials-server-test
+    build:
+      context: clients/example-go-client-credentials-server-test
+    environment:
+      - EXAMPLE_SERVER_URL=https://example-go-client-credentials-server.test:8026
+      - EXAMPLE_OAUTH_CLIENT_ID=example-go-client-credentials-server-test
+      - EXAMPLE_OAUTH_CLIENT_SECRET=example
+      - EXAMPLE_OAUTH_TOKEN_URL=https://keycloak.test:8443/realms/example/protocol/openid-connect/token
+    volumes:
+      - ./tmp/keycloak-ca/keycloak-ca-crt.pem:/usr/local/share/ca-certificates/keycloak.crt:ro
   example-go-confidential:
     build:
       context: clients/example-go-confidential

@@ -52,9 +52,29 @@ resource "keycloak_user" "alice" {
 }
 
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
+resource "keycloak_openid_client" "example_go_client_credentials_server" {
+  realm_id                 = keycloak_realm.example.id
+  description              = "Example Go Client Credentials Server (OAuth 2.0 Client Credentials Grant)"
+  client_id                = "example-go-client-credentials-server"
+  client_secret            = "example" # NB in a real program, this should be randomly generated.
+  access_type              = "CONFIDENTIAL"
+  service_accounts_enabled = true
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
+resource "keycloak_openid_client" "example_go_client_credentials_server_test" {
+  realm_id                 = keycloak_realm.example.id
+  description              = "Example Go Client Credentials Server Test (OAuth 2.0 Client Credentials Grant)"
+  client_id                = "example-go-client-credentials-server-test"
+  client_secret            = "example" # NB in a real program, this should be randomly generated.
+  access_type              = "CONFIDENTIAL"
+  service_accounts_enabled = true
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
 resource "keycloak_openid_client" "example_go_confidential" {
   realm_id              = keycloak_realm.example.id
-  description           = "Example Go Confidential Client"
+  description           = "Example Go Confidential Client (OAuth 2.0 Authorization Code Grant)"
   client_id             = "example-go-confidential"
   client_secret         = "example" # NB in a real program, this should be randomly generated.
   access_type           = "CONFIDENTIAL"
@@ -139,7 +159,7 @@ resource "keycloak_role" "example_go_saml_administrator" {
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
 resource "keycloak_openid_client" "example_react_public" {
   realm_id              = keycloak_realm.example.id
-  description           = "Example React Public Client"
+  description           = "Example React Public Client (OAuth 2.0 Authorization Code Grant)"
   client_id             = "example-react-public"
   access_type           = "PUBLIC"
   standard_flow_enabled = true
@@ -152,7 +172,7 @@ resource "keycloak_openid_client" "example_react_public" {
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
 resource "keycloak_openid_client" "example_csharp_public_device" {
   realm_id                                  = keycloak_realm.example.id
-  description                               = "Example Csharp Public Device Client"
+  description                               = "Example Csharp Public Device Client (OAuth 2.0 Device Authorization Grant)"
   client_id                                 = "example-csharp-public-device"
   access_type                               = "PUBLIC"
   oauth2_device_authorization_grant_enabled = true

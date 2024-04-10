@@ -6,6 +6,7 @@ ca_common_name='Keycloak CA'
 server_domains=(
     keycloak.test
     mail.test
+    example-go-client-credentials-server.test
     example-go-confidential.test
     example-go-saml.test
     example-react-public.test

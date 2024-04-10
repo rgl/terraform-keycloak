@@ -24,8 +24,12 @@ docker compose --profile example-csharp-public-device run \
 docker compose --profile example-csharp-public-device build \
   example-csharp-public-device-test
 
+# build (the images that have profiles).
+for profile in $(yq '.services[].profiles[]' docker-compose.yml | sort --uniq); do
+    docker compose --profile $profile build
+done
+
 # start the environment in background.
-docker compose --profile test build
 docker compose up --build --detach
 
 # wait for the services to exit.
@@ -66,6 +70,9 @@ EOF
 echo 'example-csharp-public-device client test:'
 docker compose --profile example-csharp-public-device run example-csharp-public-device-test | sed -E 's,^(.*),  \1,g'
 echo
+echo 'example-go-client-credentials-server client test:'
+docker compose --profile example-go-client-credentials-server-test run example-go-client-credentials-server-test | sed -E 's,^(.*),  \1,g'
+echo
 echo 'example-go-confidential client test:'
 docker compose --profile test run example-go-confidential-test | sed -E 's,^(.*),  \1,g'
 echo
@@ -83,6 +90,10 @@ cat <<'EOF'
 example-csharp-public-device client:
   Execute:
     docker compose --profile example-csharp-public-device run example-csharp-public-device
+
+example-go-client-credentials-server client:
+  Execute:
+    docker compose --profile example-go-client-credentials-server-test run example-go-client-credentials-server-test
 
 example-go-confidential client:
   Start the login dance at https://example-go-confidential.test:8081 as alice:alice
