@@ -52,6 +52,26 @@ resource "keycloak_user" "alice" {
 }
 
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
+resource "keycloak_openid_client" "example_csharp_client_credentials_server" {
+  realm_id                 = keycloak_realm.example.id
+  description              = "Example C# Client Credentials Server (OAuth 2.0 Client Credentials Grant)"
+  client_id                = "example-csharp-client-credentials-server"
+  client_secret            = "example" # NB in a real program, this should be randomly generated.
+  access_type              = "CONFIDENTIAL"
+  service_accounts_enabled = true
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
+resource "keycloak_openid_client" "example_csharp_client_credentials_server_test" {
+  realm_id                 = keycloak_realm.example.id
+  description              = "Example C# Client Credentials Server Test (OAuth 2.0 Client Credentials Grant)"
+  client_id                = "example-csharp-client-credentials-server-test"
+  client_secret            = "example" # NB in a real program, this should be randomly generated.
+  access_type              = "CONFIDENTIAL"
+  service_accounts_enabled = true
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
 resource "keycloak_openid_client" "example_go_client_credentials_server" {
   realm_id                 = keycloak_realm.example.id
   description              = "Example Go Client Credentials Server (OAuth 2.0 Client Credentials Grant)"

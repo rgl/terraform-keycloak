@@ -70,6 +70,9 @@ EOF
 echo 'example-csharp-public-device client test:'
 docker compose --profile example-csharp-public-device run example-csharp-public-device-test | sed -E 's,^(.*),  \1,g'
 echo
+echo 'example-csharp-client-credentials-server client test:'
+docker compose --profile test run example-csharp-client-credentials-server-test | sed -E 's,^(.*),  \1,g'
+echo
 echo 'example-go-client-credentials-server client test:'
 docker compose --profile example-go-client-credentials-server-test run example-go-client-credentials-server-test | sed -E 's,^(.*),  \1,g'
 echo
@@ -90,6 +93,10 @@ cat <<'EOF'
 example-csharp-public-device client:
   Execute:
     docker compose --profile example-csharp-public-device run example-csharp-public-device
+
+example-csharp-client-credentials-server client:
+  Execute:
+    docker compose --profile test run example-csharp-client-credentials-server-test
 
 example-go-client-credentials-server client:
   Execute:

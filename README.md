@@ -14,18 +14,21 @@ This will:
   * Create the `administrators` group.
     * Assign the `example-go-saml` client `administrator` role.
     * Add the `alice` user as a member.
-  * Create the `example-csharp-public-device` client 
-  * Create the `example-go-client-credentials-server` client 
-  * Create the `example-go-client-credentials-server-test` client 
+  * Create the `example-csharp-public-device` client.
+  * Create the `example-csharp-client-credentials-server` client.
+  * Create the `example-csharp-client-credentials-server-test` client.
+  * Create the `example-go-client-credentials-server` client.
+  * Create the `example-go-client-credentials-server-test` client.
   * Create the `example-go-confidential` client.
   * Create the `example-go-saml` client.
     * Create the `administrator` role.
   * Create the `example-react-public` client.
 * Start the example `example-csharp-public-device` client (and test it).
   * Uses the [OAuth 2.0 Device Authorization Grant](https://oauth.net/2/device-flow/) (aka Device Flow).
+* Start the example `example-csharp-client-credentials-server` server.
+  * Authorizes client requests using [OAuth Access Tokens](https://oauth.net/2/access-tokens/) (specifically, [OAuth 2.0 Bearer Tokens](https://oauth.net/2/bearer-tokens/)).
 * Start the example `example-go-client-credentials-server` server.
   * Authorizes client requests using [OAuth Access Tokens](https://oauth.net/2/access-tokens/) (specifically, [OAuth 2.0 Bearer Tokens](https://oauth.net/2/bearer-tokens/)).
-  * Only accepts requests from the `example-go-client-credentials-server-test` client.
 * Start the example `example-go-client-credentials-server-test` client.
   * Uses the [OAuth 2.0 Client Credentials Grant](https://oauth.net/2/grant-types/client-credentials/).
 * Start the example `example-go-confidential` client (and test it).
@@ -46,6 +49,7 @@ Add the following to your machine `hosts` file:
 ```
 127.0.0.1 keycloak.test
 127.0.0.1 mail.test
+127.0.0.1 example-csharp-client-credentials-server.test
 127.0.0.1 example-go-client-credentials-server.test
 127.0.0.1 example-go-confidential.test
 127.0.0.1 example-go-saml.test
@@ -74,12 +78,13 @@ When anything goes wrong, you can try to troubleshoot at:
   the requests/responses and paste them in the SAML Decoder & Parser at
   https://www.scottbrady91.com/tools/saml-parser.
 
-Manually try the OAuth 2.0 Client Credentials Grant from bash:
+Manually try the Go OAuth 2.0 Client Credentials Grant from bash:
 
 ```bash
 # NB this is the bash equivalent of:
 #     clients/example-go-client-credentials-server-test
 #     clients/example-go-client-credentials-server
+export SSL_CERT_FILE="$PWD/tmp/keycloak-ca/keycloak-ca-crt.pem"
 token_url='https://keycloak.test:8443/realms/example/protocol/openid-connect/token'
 introspection_url='https://keycloak.test:8443/realms/example/protocol/openid-connect/token/introspect'
 client_id='example-go-client-credentials-server-test'
@@ -87,7 +92,6 @@ client_secret='example'
 server_client_id='example-go-client-credentials-server'
 server_client_secret='example'
 token_response="$(curl \
-  -k \
   -s \
   -X POST \
   -u "$client_id:$client_secret" \
@@ -104,12 +108,61 @@ jq <<<"$token_response"
 #     clients/example-react-public
 token="$(jq -r .access_token <<<"$token_response")"
 curl \
-  -k \
   -s \
   -X POST \
   -u "$server_client_id:$server_client_secret" \
   -d "token=$token" \
   "$introspection_url" \
+  | jq
+```
+
+Manually try the C# OAuth 2.0 Client Credentials Grant from bash:
+
+```bash
+# NB this is the bash equivalent of:
+#     clients/example-csharp-client-credentials-server-test
+#     clients/example-csharp-client-credentials-server
+export SSL_CERT_FILE="$PWD/tmp/keycloak-ca/keycloak-ca-crt.pem"
+token_url='https://keycloak.test:8443/realms/example/protocol/openid-connect/token'
+introspection_url='https://keycloak.test:8443/realms/example/protocol/openid-connect/token/introspect'
+client_id='example-csharp-client-credentials-server-test'
+client_secret='example'
+server_url='https://example-csharp-client-credentials-server.test:8027'
+server_client_id='example-csharp-client-credentials-server'
+server_client_secret='example'
+token_response="$(curl \
+  -s \
+  -X POST \
+  -u "$client_id:$client_secret" \
+  -d "grant_type=client_credentials&client_id=$client_id&client_secret=$client_secret" \
+  "$token_url")"
+jq <<<"$token_response"
+# NB In Keycloak, this token is a JWT (as defined in the JSON Web Token (JWT)
+#    Profile for OAuth 2.0 Access Tokens at
+#    https://datatracker.ietf.org/doc/html/rfc9068).
+# NB This means we can also use the Keycloak OIDC configuration endpoint at
+#    https://keycloak.test:8443/realms/example/.well-known/openid-configuration
+#    to drive the token validation based in the JWT issuer URL, like we do in:
+#     clients/example-csharp-client-credentials-server
+#     clients/example-go-confidential
+#     clients/example-react-public
+token="$(jq -r .access_token <<<"$token_response")"
+curl \
+  -s \
+  -X POST \
+  -u "$server_client_id:$server_client_secret" \
+  -d "token=$token" \
+  "$introspection_url" \
+  | jq
+# try calling the example-csharp-client-credentials-server service.
+# NB when there is an error, the www-authenticate response header contains
+#    the error. for example:
+#       www-authenticate: Bearer error="invalid_token", error_description="The token expired at '04/14/2024 10:43:45'"
+curl \
+  -s \
+  -X GET \
+  -H "Authorization: Bearer $token" \
+  "$server_url/protected" \
   | jq
 ```
 
