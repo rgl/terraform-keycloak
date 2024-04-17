@@ -71,6 +71,15 @@ resource "keycloak_openid_client" "example_csharp_client_credentials_server_test
   service_accounts_enabled = true
 }
 
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_hardcoded_claim_protocol_mapper
+resource "keycloak_openid_hardcoded_claim_protocol_mapper" "example_csharp_client_credentials_server_test_project" {
+  realm_id    = keycloak_realm.example.id
+  client_id   = keycloak_openid_client.example_csharp_client_credentials_server_test.id
+  name        = "Project"
+  claim_name  = "project"
+  claim_value = "example"
+}
+
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
 resource "keycloak_openid_client" "example_go_client_credentials_server" {
   realm_id                 = keycloak_realm.example.id
@@ -89,6 +98,15 @@ resource "keycloak_openid_client" "example_go_client_credentials_server_test" {
   client_secret            = "example" # NB in a real program, this should be randomly generated.
   access_type              = "CONFIDENTIAL"
   service_accounts_enabled = true
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_hardcoded_claim_protocol_mapper
+resource "keycloak_openid_hardcoded_claim_protocol_mapper" "example_go_client_credentials_server_test_project" {
+  realm_id    = keycloak_realm.example.id
+  client_id   = keycloak_openid_client.example_go_client_credentials_server_test.id
+  name        = "Project"
+  claim_name  = "project"
+  claim_value = "example"
 }
 
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client

@@ -17,8 +17,10 @@ This will:
   * Create the `example-csharp-public-device` client.
   * Create the `example-csharp-client-credentials-server` client.
   * Create the `example-csharp-client-credentials-server-test` client.
+    * Add the `project` custom claim.
   * Create the `example-go-client-credentials-server` client.
   * Create the `example-go-client-credentials-server-test` client.
+    * Add the `project` custom claim.
   * Create the `example-go-confidential` client.
   * Create the `example-go-saml` client.
     * Create the `administrator` role.
@@ -116,6 +118,48 @@ curl \
   | jq
 ```
 
+This should return the following claims and values, something alike:
+
+**NB** Notice the presence of the `project` custom claim.
+
+```json
+{
+  "exp": 1713382890,
+  "iat": 1713382590,
+  "jti": "fdbae048-85ab-4449-a77e-06d03ac885a1",
+  "iss": "https://keycloak.test:8443/realms/example",
+  "aud": "account",
+  "sub": "3b00d462-9106-420e-97e9-542c4874d36f",
+  "typ": "Bearer",
+  "azp": "example-go-client-credentials-server-test",
+  "acr": "1",
+  "realm_access": {
+    "roles": [
+      "offline_access",
+      "default-roles-example",
+      "uma_authorization"
+    ]
+  },
+  "resource_access": {
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "email profile",
+  "email_verified": false,
+  "project": "example",
+  "preferred_username": "service-account-example-go-client-credentials-server-test",
+  "client_id": "example-go-client-credentials-server-test",
+  "username": "service-account-example-go-client-credentials-server-test",
+  "token_type": "Bearer",
+  "active": true
+}
+```
+
 Manually try the C# OAuth 2.0 Client Credentials Grant from bash:
 
 ```bash
@@ -154,7 +198,53 @@ curl \
   -d "token=$token" \
   "$introspection_url" \
   | jq
-# try calling the example-csharp-client-credentials-server service.
+```
+
+This should return the following claims and values, something alike:
+
+**NB** Notice the presence of the `project` custom claim.
+
+```json
+{
+  "exp": 1713382969,
+  "iat": 1713382669,
+  "jti": "4a443912-8e19-471f-b301-1e5c98d904de",
+  "iss": "https://keycloak.test:8443/realms/example",
+  "aud": "account",
+  "sub": "7da88c59-397e-4ec8-959f-0125b1ad73e3",
+  "typ": "Bearer",
+  "azp": "example-csharp-client-credentials-server-test",
+  "acr": "1",
+  "realm_access": {
+    "roles": [
+      "offline_access",
+      "default-roles-example",
+      "uma_authorization"
+    ]
+  },
+  "resource_access": {
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "email profile",
+  "email_verified": false,
+  "project": "example",
+  "preferred_username": "service-account-example-csharp-client-credentials-server-test",
+  "client_id": "example-csharp-client-credentials-server-test",
+  "username": "service-account-example-csharp-client-credentials-server-test",
+  "token_type": "Bearer",
+  "active": true
+}
+```
+
+Try calling the `example-csharp-client-credentials-server` service using the access token:
+
+```bash
 # NB when there is an error, the www-authenticate response header contains
 #    the error. for example:
 #       www-authenticate: Bearer error="invalid_token", error_description="The token expired at '04/14/2024 10:43:45'"
@@ -164,6 +254,89 @@ curl \
   -H "Authorization: Bearer $token" \
   "$server_url/protected" \
   | jq
+```
+
+This should return the following claims and values, something alike:
+
+**NB** Notice the presence of the `project` custom claim.
+
+```json
+{
+  "Claims": [
+    {
+      "Name": "exp",
+      "Value": "1713382969"
+    },
+    {
+      "Name": "iat",
+      "Value": "1713382669"
+    },
+    {
+      "Name": "jti",
+      "Value": "4a443912-8e19-471f-b301-1e5c98d904de"
+    },
+    {
+      "Name": "iss",
+      "Value": "https://keycloak.test:8443/realms/example"
+    },
+    {
+      "Name": "aud",
+      "Value": "account"
+    },
+    {
+      "Name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+      "Value": "7da88c59-397e-4ec8-959f-0125b1ad73e3"
+    },
+    {
+      "Name": "typ",
+      "Value": "Bearer"
+    },
+    {
+      "Name": "azp",
+      "Value": "example-csharp-client-credentials-server-test"
+    },
+    {
+      "Name": "http://schemas.microsoft.com/claims/authnclassreference",
+      "Value": "1"
+    },
+    {
+      "Name": "realm_access",
+      "Value": "{\"roles\":[\"offline_access\",\"default-roles-example\",\"uma_authorization\"]}"
+    },
+    {
+      "Name": "resource_access",
+      "Value": "{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}}"
+    },
+    {
+      "Name": "scope",
+      "Value": "email profile"
+    },
+    {
+      "Name": "clientHost",
+      "Value": "172.19.0.1"
+    },
+    {
+      "Name": "email_verified",
+      "Value": "false"
+    },
+    {
+      "Name": "project",
+      "Value": "example"
+    },
+    {
+      "Name": "preferred_username",
+      "Value": "service-account-example-csharp-client-credentials-server-test"
+    },
+    {
+      "Name": "clientAddress",
+      "Value": "172.19.0.1"
+    },
+    {
+      "Name": "client_id",
+      "Value": "example-csharp-client-credentials-server-test"
+    }
+  ]
+}
 ```
 
 Destroy everything:
