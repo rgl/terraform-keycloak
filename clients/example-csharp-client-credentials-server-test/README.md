@@ -8,5 +8,5 @@ dotnet run
 # References
 
 * [Client credential flows](https://learn.microsoft.com/en-us/entra/msal/dotnet/acquiring-tokens/web-apps-apis/client-credential-flows).
-* [Microsoft.Identity.Client source-code](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/tree/4.60.2/src).
+* [Microsoft.Identity.Client source-code](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/tree/4.60.3/src).
 * [Token cache serialization](https://learn.microsoft.com/en-us/entra/msal/dotnet/how-to/token-cache-serialization).
