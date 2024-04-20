@@ -10,7 +10,10 @@ This will:
   * Use it to sign all the used HTTPS certificates.
 * Create a test Keycloak instance inside a docker container using docker compose.
 * Create the `example` realm.
+  * Configure the User Profile.
+    * Add the `department` custom attribute.
   * Create the `alice` user.
+    * Add the `department` custom attribute.
   * Create the `administrators` group.
     * Assign the `example-go-saml` client `administrator` role.
     * Add the `alice` user as a member.
