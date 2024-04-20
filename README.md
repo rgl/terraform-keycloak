@@ -97,7 +97,9 @@ token_response="$(curl \
   -s \
   -X POST \
   -u "$client_id:$client_secret" \
-  -d "grant_type=client_credentials&client_id=$client_id&client_secret=$client_secret" \
+  -d "grant_type=client_credentials" \
+  -d "client_id=$client_id" \
+  -d "client_secret=$client_secret" \
   "$token_url")"
 jq <<<"$token_response"
 # NB In Keycloak, this token is a JWT (as defined in the JSON Web Token (JWT)
@@ -178,7 +180,9 @@ token_response="$(curl \
   -s \
   -X POST \
   -u "$client_id:$client_secret" \
-  -d "grant_type=client_credentials&client_id=$client_id&client_secret=$client_secret" \
+  -d "grant_type=client_credentials" \
+  -d "client_id=$client_id" \
+  -d "client_secret=$client_secret" \
   "$token_url")"
 jq <<<"$token_response"
 # NB In Keycloak, this token is a JWT (as defined in the JSON Web Token (JWT)
