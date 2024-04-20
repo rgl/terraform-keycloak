@@ -17,6 +17,8 @@ This will:
   * Create the `administrators` group.
     * Assign the `example-go-saml` client `administrator` role.
     * Add the `alice` user as a member.
+  * Create the `example-bash-password-client` client.
+    * Add the `department` custom claim derived from the `department` user custom attribute.
   * Create the `example-csharp-public-device` client.
   * Create the `example-csharp-client-credentials-server` client.
   * Create the `example-csharp-client-credentials-server-test` client.
@@ -349,6 +351,110 @@ This should return the following claims and values, something alike:
       "Value": "example-csharp-client-credentials-server-test"
     }
   ]
+}
+```
+
+Try OAuth 2.0 Resource Owner Password Credentials Grant (aka Direct Access Grant; aka Password Grant) from bash:
+
+**NB** Although this OAuth 2.0 Grant is supported by Keycloak, its not a [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#name-resource-owner-password-cre).
+
+```bash
+export SSL_CERT_FILE="$PWD/tmp/keycloak-ca/keycloak-ca-crt.pem"
+token_url='https://keycloak.test:8443/realms/example/protocol/openid-connect/token'
+introspection_url='https://keycloak.test:8443/realms/example/protocol/openid-connect/token/introspect'
+client_id='example-bash-password-client'
+client_secret='example'
+user_username='alice'
+user_password='alice'
+server_url='https://example-csharp-client-credentials-server.test:8027'
+server_client_id='example-csharp-client-credentials-server'
+server_client_secret='example'
+token_response="$(curl \
+  -s \
+  -X POST \
+  -u "$client_id:$client_secret" \
+  -d "grant_type=password" \
+  -d "client_id=$client_id" \
+  -d "client_secret=$client_secret" \
+  -d "username=$user_username" \
+  -d "password=$user_password" \
+  "$token_url")"
+jq <<<"$token_response"
+# NB In Keycloak, this token is a JWT (as defined in the JSON Web Token (JWT)
+#    Profile for OAuth 2.0 Access Tokens at
+#    https://datatracker.ietf.org/doc/html/rfc9068).
+# NB This means we can also use the Keycloak OIDC configuration endpoint at
+#    https://keycloak.test:8443/realms/example/.well-known/openid-configuration
+#    to drive the token validation based in the JWT issuer URL, like we do in:
+#     clients/example-csharp-client-credentials-server
+#     clients/example-go-confidential
+#     clients/example-react-public
+token="$(jq -r .access_token <<<"$token_response")"
+# show the (access) token claims.
+perl -ne '/.+\.(.+)\.(.+)/ && print $1' <<<"$token" | base64 -d 2>/dev/null | jq
+# show the claims returned by the introspection url.
+curl \
+  -s \
+  -X POST \
+  -u "$server_client_id:$server_client_secret" \
+  -d "token=$token" \
+  "$introspection_url" \
+  | jq
+```
+
+This should return the following claims and values, something alike:
+
+**NB** Notice the presence of the `department` custom claim.
+
+```json
+{
+  "exp": 1713632625,
+  "iat": 1713632325,
+  "jti": "cb9af167-43b9-4884-a0b9-b0ea856e8e03",
+  "iss": "https://keycloak.test:8443/realms/example",
+  "aud": [
+    "example-go-saml",
+    "account"
+  ],
+  "sub": "dc4bde45-1211-45c2-bbfd-fcba56d40e12",
+  "typ": "Bearer",
+  "azp": "example-bash-password-client",
+  "session_state": "fbdd975c-aa21-4fca-9884-8a85964bf101",
+  "acr": "1",
+  "realm_access": {
+    "roles": [
+      "offline_access",
+      "default-roles-example",
+      "uma_authorization"
+    ]
+  },
+  "resource_access": {
+    "example-go-saml": {
+      "roles": [
+        "administrator"
+      ]
+    },
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "profile email",
+  "sid": "fbdd975c-aa21-4fca-9884-8a85964bf101",
+  "email_verified": true,
+  "name": "Alice Doe",
+  "preferred_username": "alice",
+  "department": "example",
+  "given_name": "Alice",
+  "family_name": "Doe",
+  "email": "alice@example.com",
+  "client_id": "example-bash-password-client",
+  "username": "alice",
+  "token_type": "Bearer",
+  "active": true
 }
 ```
 

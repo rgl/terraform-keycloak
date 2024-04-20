@@ -160,6 +160,26 @@ resource "keycloak_user" "alice" {
   ]
 }
 
+# NB Although this OAuth 2.0 Grant is supported by Keycloak, its not a [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#name-resource-owner-password-cre).
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
+resource "keycloak_openid_client" "example_bash_password_client" {
+  realm_id                     = keycloak_realm.example.id
+  description                  = "Example Bash Password Client (OAuth 2.0 Resource Owner Password Credentials Grant aka Password Grant)"
+  client_id                    = "example-bash-password-client"
+  client_secret                = "example" # NB in a real program, this should be randomly generated.
+  access_type                  = "CONFIDENTIAL"
+  direct_access_grants_enabled = true
+}
+
+# see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_user_attribute_protocol_mapper
+resource "keycloak_openid_user_attribute_protocol_mapper" "example_bash_password_client_department" {
+  realm_id       = keycloak_realm.example.id
+  client_id      = keycloak_openid_client.example_bash_password_client.id
+  name           = "Department"
+  user_attribute = "department"
+  claim_name     = "department"
+}
+
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/openid_client
 resource "keycloak_openid_client" "example_csharp_client_credentials_server" {
   realm_id                 = keycloak_realm.example.id
