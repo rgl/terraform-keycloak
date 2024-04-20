@@ -111,6 +111,9 @@ jq <<<"$token_response"
 #     clients/example-go-confidential
 #     clients/example-react-public
 token="$(jq -r .access_token <<<"$token_response")"
+# show the (access) token claims.
+perl -ne '/.+\.(.+)\.(.+)/ && print $1' <<<"$token" | base64 -d 2>/dev/null | jq
+# show the claims returned by the introspection url.
 curl \
   -s \
   -X POST \
@@ -195,6 +198,9 @@ jq <<<"$token_response"
 #     clients/example-go-confidential
 #     clients/example-react-public
 token="$(jq -r .access_token <<<"$token_response")"
+# show the (access) token claims.
+perl -ne '/.+\.(.+)\.(.+)/ && print $1' <<<"$token" | base64 -d 2>/dev/null | jq
+# show the claims returned by the introspection url.
 curl \
   -s \
   -X POST \
