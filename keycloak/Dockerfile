@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1.7
+# syntax=docker.io/docker/dockerfile:1.8
 
 # see https://quay.io/repository/keycloak/keycloak
 # see https://www.keycloak.org/docs/latest/release_notes/index.html
