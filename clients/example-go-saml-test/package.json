@@ -8,9 +8,9 @@
   },
   "author": "Rui Lopes",
   "devDependencies": {
-    "@playwright/test": "^1.44.1",
+    "@playwright/test": "^1.46.1",
     "@types/he": "^1.2.3",
-    "@types/node": "^20.14.6"
+    "@types/node": "^20.15.0"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
