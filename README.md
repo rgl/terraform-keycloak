@@ -69,6 +69,21 @@ Start the environment:
 ./create.sh
 ```
 
+Configure your Firefox Snap to trust the Keycloak CA:
+
+```bash
+nssdb_path="$(dirname ~/snap/firefox/common/.mozilla/firefox/*/cert9.db)"
+# list the trusted cas.
+certutil -L -d "sql:$nssdb_path"
+# delete the ca.
+# NB this errors when it does not exist.
+certutil -D -d "sql:$nssdb_path" -n terraform-keycloak
+# trust the ca.
+certutil -A -d "sql:$nssdb_path" -n terraform-keycloak \
+  -i tmp/keycloak-ca/keycloak-ca-crt.pem \
+  -t 'C,,'
+```
+
 Try the example applications displayed by the above command. E.g., try the
 OpenID Connect Confidential Client as the `alice`:`alice` user at:
 
