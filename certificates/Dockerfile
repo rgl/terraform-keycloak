@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1.8
+# syntax=docker.io/docker/dockerfile:1.9
 
 FROM debian:bookworm-slim
 VOLUME /host

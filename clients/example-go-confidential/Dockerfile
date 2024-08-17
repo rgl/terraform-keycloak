@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1.8
+# syntax=docker.io/docker/dockerfile:1.9
 
 FROM golang:1.22-bookworm as builder
 WORKDIR /app
