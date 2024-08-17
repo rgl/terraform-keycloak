@@ -8,7 +8,7 @@ COPY src src
 COPY public public
 RUN npm run build
 
-FROM golang:1.22-bookworm as builder
+FROM golang:1.23-bookworm as builder
 WORKDIR /app
 COPY go.* .
 RUN go mod download
