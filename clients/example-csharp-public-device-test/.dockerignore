@@ -1,0 +1,6 @@
+*
+!./entrypoint.sh
+!./*.json
+!./*.ts
+!./tests/
+!./tmp/ExampleCsharpPublicDevice
