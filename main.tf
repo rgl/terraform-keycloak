@@ -253,12 +253,14 @@ resource "keycloak_openid_client" "example_go_confidential" {
 
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_client
 resource "keycloak_saml_client" "example_go_saml" {
-  realm_id            = keycloak_realm.example.id
-  description         = "Example Go SAML"
-  client_id           = "example-go-saml"
-  root_url            = "https://example-go-saml.test:8082"
-  valid_redirect_uris = ["/saml/acs"]
-  signing_certificate = file("/host/clients/example-go-saml/example-go-saml-crt.pem")
+  realm_id                  = keycloak_realm.example.id
+  description               = "Example Go SAML"
+  client_id                 = "example-go-saml"
+  root_url                  = "https://example-go-saml.test:8082"
+  valid_redirect_uris       = ["/saml/acs"]
+  client_signature_required = false # TODO understand why keycloak fails to validate the client signature.
+  signature_algorithm       = "RSA_SHA256"
+  signing_certificate       = file("/host/clients/example-go-saml/example-go-saml-crt.pem")
 }
 
 # see https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/saml_user_property_protocol_mapper

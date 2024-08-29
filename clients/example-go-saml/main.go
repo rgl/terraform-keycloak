@@ -19,6 +19,7 @@ import (
 
 	"github.com/crewjam/saml"
 	"github.com/crewjam/saml/samlsp"
+	dsig "github.com/russellhaering/goxmldsig"
 )
 
 var indexTextTemplate = template.Must(template.New("Index").Parse(`# Session Claims
@@ -340,6 +341,8 @@ func main() {
 		AllowIDPInitiated: true,
 		SignRequest:       true,
 	})
+
+	samlMiddleware.ServiceProvider.SignatureMethod = dsig.RSASHA256SignatureMethod
 
 	buf, err := xml.MarshalIndent(samlMiddleware.ServiceProvider.Metadata(), "", "  ")
 	if err != nil {

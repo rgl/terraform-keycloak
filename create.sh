@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+export COMPOSE_IGNORE_ORPHANS=1
+
 # destroy the existing environment.
 ./destroy.sh
 
