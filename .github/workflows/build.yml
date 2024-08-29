@@ -15,7 +15,7 @@ jobs:
         name: Setup
         with:
           # renovate: datasource=github-releases depName=terraform-linters/tflint
-          tflint_version: v0.52.0
+          tflint_version: v0.53.0
       - name: Init
         run: tflint --init
       - name: Lint
