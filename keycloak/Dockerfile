@@ -23,7 +23,7 @@ dnf --installroot /mnt/rootfs clean all
 rpm --root /mnt/rootfs -e --nodeps setup
 EOF
 
-FROM quay.io/keycloak/keycloak:25.0.2
+FROM quay.io/keycloak/keycloak:25.0.4
 COPY --from=ubi-micro-build /mnt/rootfs /
 COPY --chmod=0755 entrypoint.sh /
 USER 0
