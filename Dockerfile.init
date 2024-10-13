@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile:1.10
 
-FROM hashicorp/terraform:1.9.5
+FROM hashicorp/terraform:1.9.7
 
 RUN <<EOF
 apk add --update --no-cache \
