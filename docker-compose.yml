@@ -10,7 +10,7 @@ services:
     # see https://hub.docker.com/r/axllent/mailpit
     # see https://github.com/axllent/mailpit
     # see https://mailpit.axllent.org/docs/install/docker/
-    image: axllent/mailpit:v1.20.2
+    image: axllent/mailpit:v1.20.5
     command:
       - --smtp-auth-accept-any
       - --smtp-auth-allow-insecure
