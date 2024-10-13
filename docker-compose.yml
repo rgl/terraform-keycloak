@@ -41,8 +41,8 @@ services:
       - 8443:8443
     environment:
       - KC_HOSTNAME=keycloak.test
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
     command:
       - start-dev
     volumes:
