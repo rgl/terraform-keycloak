@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile:1.12
 
-FROM mcr.microsoft.com/playwright:v1.48.0
+FROM mcr.microsoft.com/playwright:v1.49.1
 RUN <<'EOF'
 #!/bin/bash
 set -euxo pipefail

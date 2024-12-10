@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile:1.12
 
-FROM node:20-bookworm as builder-react
+FROM node:22-bookworm as builder-react
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
