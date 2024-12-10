@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1.10
+# syntax=docker.io/docker/dockerfile:1.12
 
 FROM debian:bookworm-slim
 VOLUME /host

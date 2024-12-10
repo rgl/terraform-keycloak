@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1.10
+# syntax=docker.io/docker/dockerfile:1.12
 
 # see https://quay.io/repository/keycloak/keycloak
 # see https://www.keycloak.org/docs/latest/release_notes/index.html

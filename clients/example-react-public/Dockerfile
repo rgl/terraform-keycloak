@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1.10
+# syntax=docker.io/docker/dockerfile:1.12
 
 FROM node:20-bookworm as builder-react
 WORKDIR /app

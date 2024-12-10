@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1.10
+# syntax=docker.io/docker/dockerfile:1.12
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
 WORKDIR /app

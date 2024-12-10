@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1.10
+# syntax=docker.io/docker/dockerfile:1.12
 
 FROM mcr.microsoft.com/playwright:v1.48.1
 RUN <<'EOF'
